@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roadmap — Cybersprouts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<header id="header"></header>
+
+<main class="wrap roadmap-layout">
+
+  <aside class="side">
+    <div class="panel">
+      <h4>Your growth</h4>
+      <div class="progress-row">
+        <svg class="ring" viewBox="0 0 100 100">
+          <circle class="track" cx="50" cy="50" r="42"></circle>
+          <circle class="fill" id="ring-fill" cx="50" cy="50" r="42"
+                  transform="rotate(-90 50 50)" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+        </svg>
+        <div>
+          <div class="num" id="pct">0%</div>
+          <div class="sub" id="pct-sub">0 of 0 lessons</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h4>Legend</h4>
+      <div class="legend">
+        <span><i class="done"></i> Completed</span>
+        <span><i class="current"></i> Up next</span>
+        <span><i></i> Locked until prerequisites are done</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h4>Specialization</h4>
+      <div class="team-switch" id="team-switch">
+        <button data-team="red"  class="red">Red team</button>
+        <button data-team="blue" class="blue">Blue team</button>
+      </div>
+      <p class="locknote" id="team-note"></p>
+    </div>
+
+    <div class="panel ai-panel">
+      <h4>◇ Independent module</h4>
+      <p>AI Security sits outside the roadmap. Step in whenever you're curious and come back exactly where you left off.</p>
+      <a class="btn btn-sm" href="lesson.html?module=ai">Open AI Security</a>
+    </div>
+
+    <div class="panel">
+      <h4>Shortcut</h4>
+      <p style="font-size:13px;color:var(--text-dim);margin:0 0 14px">
+        Already know the fundamentals? The placement test can mark the early modules complete for you.
+      </p>
+      <a class="btn btn-sm btn-ghost" href="placement.html">Take placement test</a>
+    </div>
+  </aside>
+
+  <section>
+    <div class="vine-head">
+      <h1>Your roadmap</h1>
+      <p id="vine-sub">Start at the seed and grow upward. After networking, the vine splits.</p>
+    </div>
+
+    <!-- wide-screen vine -->
+    <div class="vine-scene" id="scene">
+      <svg class="vine" viewBox="0 0 1000 1560" xmlns="http://www.w3.org/2000/svg">
+        <!-- branch labels -->
+        <text class="branch-label red-label"  x="300" y="34">Red team</text>
+        <text class="branch-label blue-label" x="700" y="34">Blue team</text>
+
+        <!-- branches -->
+        <path id="branch-red"  class="stem branch-red"
+              d="M 500 530 C 500 476, 300 506, 300 415 L 300 100"/>
+        <path id="branch-blue" class="stem branch-blue"
+              d="M 500 530 C 500 476, 700 506, 700 415 L 700 100"/>
+
+        <!-- main trunk, drawn bottom-up -->
+        <path id="trunk" class="stem"
+              d="M 500 1505
+                 C 500 1440, 430 1425, 430 1350
+                 C 430 1275, 570 1250, 570 1170
+                 C 570 1090, 430 1070, 430 990
+                 C 430 910, 570 890, 570 810
+                 C 570 730, 500 705, 500 630
+                 L 500 530"/>
+
+        <!-- leaves along the trunk -->
+        <g id="leaves">
+          <path class="leaf" d="M470 1440 c-40 -6 -66 -26 -70 -58 34 -4 62 16 70 58Z"/>
+          <path class="leaf" d="M498 1262 c38 -10 66 -2 82 -32 -32 -14 -66 -2 -82 32Z"/>
+          <path class="leaf" d="M500 1082 c-38 -10 -66 -2 -82 -32 32 -14 66 -2 82 32Z"/>
+          <path class="leaf" d="M498 902 c38 -10 66 -2 82 -32 -32 -14 -66 -2 -82 32Z"/>
+          <path class="leaf" d="M500 722 c-36 -12 -62 -6 -80 -34 32 -12 64 2 80 34Z"/>
+        </g>
+
+        <!-- fork + seed markers -->
+        <circle class="fork-dot" cx="500" cy="530" r="7"/>
+        <text class="seed-label" x="500" y="1546">🌱 start here</text>
+      </svg>
+      <div class="nodes" id="nodes"></div>
+    </div>
+
+    <!-- narrow-screen fallback -->
+    <div class="vine-list" id="list"></div>
+  </section>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/roadmap.js"></script>
+</body>
+</html>

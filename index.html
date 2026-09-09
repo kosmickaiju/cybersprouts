@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cybersprouts — Grow into cybersecurity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<header id="header"></header>
+
+<main>
+  <section class="wrap hero">
+    <span class="eyebrow">🌱 A roadmap for aspiring security people</span>
+    <h1>Cybersecurity, in the order it<br>actually makes sense to <span class="grow">learn it</span>.</h1>
+    <p class="lede">
+      A structured path from "what even is the CIA triad" to your first specialization.
+      No prior tech experience assumed — and if you already have some, skip ahead.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="roadmap.html">Start growing →</a>
+      <a class="btn btn-ghost" href="placement.html">Take the placement test</a>
+    </div>
+    <p class="hero-note">Free while we're small. 5 core modules · 2 specializations · 1 AI security track</p>
+  </section>
+
+  <section class="wrap section">
+    <div class="section-head">
+      <h2>The shared roots</h2>
+      <p>Everyone walks the same five modules first. They're deliberately ordered — each one is the prerequisite the next assumes you already have.</p>
+    </div>
+    <div class="grid-3" id="core-cards"></div>
+  </section>
+
+  <section class="wrap section">
+    <div class="section-head">
+      <h2>Then the path forks</h2>
+      <p>After networking, you choose a side. The whole interface changes colour with you — and you can come back and walk the other branch whenever you want.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card path-card red">
+        <span class="tag">Offensive</span>
+        <h3>Red Team</h3>
+        <p>Find the holes before someone else does.</p>
+        <ul>
+          <li>Recon &amp; enumeration</li>
+          <li>Exploitation &amp; pentesting</li>
+          <li>CTF prep and practice routines</li>
+        </ul>
+      </div>
+      <div class="card path-card blue">
+        <span class="tag">Defensive</span>
+        <h3>Blue Team</h3>
+        <p>Watch, detect, respond, and keep the lights on.</p>
+        <ul>
+          <li>SOC operations &amp; triage</li>
+          <li>Identity &amp; access management</li>
+          <li>Governance, risk &amp; compliance</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <div class="section-head">
+      <h2>Built around three ideas</h2>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <span class="idx">01</span>
+        <h3>Order over volume</h3>
+        <p>There is no shortage of security content. There is a shortage of someone telling you what to read second.</p>
+      </div>
+      <div class="card">
+        <span class="idx">02</span>
+        <h3>Skip what you know</h3>
+        <p>An optional placement test covers everything up to the fork, so engineers pivoting in don't relearn loops and grep.</p>
+      </div>
+      <div class="card">
+        <span class="idx">03</span>
+        <h3>AI security, anytime</h3>
+        <p>A standalone module you can drop into at any point and step back out of, without losing your place on the roadmap.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+  initChrome('home');
+
+  document.getElementById('core-cards').innerHTML = CORE_ORDER.map((id, i) => {
+    const m = getModule(id);
+    return `
+      <a class="card" href="roadmap.html">
+        <span class="idx">MODULE ${String(i + 1).padStart(2, '0')}</span>
+        <h3>${m.title}</h3>
+        <p>${m.blurb}</p>
+      </a>`;
+  }).join('') + `
+    <a class="card" href="lesson.html?module=ai" style="border-color:rgba(179,155,255,.3)">
+      <span class="idx" style="color:var(--ai)">ANYTIME</span>
+      <h3>AI Security</h3>
+      <p>${getModule('ai').blurb}</p>
+    </a>`;
+</script>
+</body>
+</html>
