@@ -23,13 +23,14 @@
   --accent-ink:  #07130d;
 
   /* fixed hues */
-  --red:   #ff6b6b;
-  --blue:  #63a4ff;
+  --red:    #ff6b6b;
+  --yellow: #f0c04a;
+  --blue:   #63a4ff;
   --ai:    #b39bff;
 
   --radius:    14px;
   --radius-sm: 9px;
-  --maxw:      1180px;
+  --maxw:      1300px;
 
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -47,6 +48,18 @@
   --surface-2:   #1f1717;
   --line:        #2e2020;
   --line-soft:   #241a1a;
+}
+[data-team='yellow'] {
+  --accent:      #f0c04a;
+  --accent-soft: #7a6224;
+  --accent-glow: rgba(240, 192, 74, .15);
+  --accent-ink:  #171003;
+  --bg:          #0d0b06;
+  --bg-raise:    #14110a;
+  --surface:     #18150d;
+  --surface-2:   #1f1b12;
+  --line:        #2e2718;
+  --line-soft:   #241f13;
 }
 [data-team='blue'] {
   --accent:      #63a4ff;
@@ -275,8 +288,9 @@ code, pre { font-family: var(--mono); }
   background: currentColor;
   opacity: .8;
 }
-.path-card.red  { color: var(--red); }
-.path-card.blue { color: var(--blue); }
+.path-card.red    { color: var(--red); }
+.path-card.yellow { color: var(--yellow); }
+.path-card.blue   { color: var(--blue); }
 .path-card h3 { color: var(--text); font-size: 19px; }
 .path-card .tag {
   font-family: var(--mono);
@@ -349,7 +363,14 @@ code, pre { font-family: var(--mono); }
 }
 .team-switch button:disabled { opacity: .35; cursor: not-allowed; }
 .team-switch button.on.red  { border-color: var(--red);  color: var(--red);  background: rgba(255,107,107,.09); }
+.team-switch button.on.yellow { border-color: var(--yellow); color: var(--yellow); background: rgba(240,192,74,.09); }
 .team-switch button.on.blue { border-color: var(--blue); color: var(--blue); background: rgba(99,164,255,.09); }
+
+.wheel-note { font-size: 12px; color: var(--text-faint); margin: 12px 0 0; line-height: 1.55; }
+.wheel-note b { font-weight: 500; }
+.c-red { color: var(--red); }
+.c-yellow { color: var(--yellow); }
+.c-blue { color: var(--blue); }
 .locknote { font-size: 12px; color: var(--text-faint); margin: 10px 0 0; }
 
 .ai-panel {
@@ -366,7 +387,13 @@ code, pre { font-family: var(--mono); }
 }
 .ai-panel h4 { color: var(--ai); }
 .ai-panel p { font-size: 13px; color: var(--text-dim); margin: 0 0 14px; }
-.ai-panel .btn { width: 100%; border-color: rgba(179,155,255,.35); color: var(--ai); }
+.ai-panel .btn {
+  width: 100%;
+  border-color: rgba(179,155,255,.32);
+  color: var(--ai);
+  margin-bottom: 7px;
+}
+.ai-panel .btn:last-child { margin-bottom: 0; }
 .ai-panel .btn:hover { background: rgba(179,155,255,.1); }
 
 /* ---------------------------------------------------------------- the vine */
@@ -384,11 +411,16 @@ code, pre { font-family: var(--mono); }
   stroke-linecap: round;
 }
 .vine path.stem.grown  { stroke: var(--accent-soft); }
-.vine path.branch-red  { stroke: rgba(255,107,107,.30); }
-.vine path.branch-blue { stroke: rgba(99,164,255,.30); }
-.vine path.branch-red.live  { stroke: rgba(255,107,107,.75); }
-.vine path.branch-blue.live { stroke: rgba(99,164,255,.75); }
+.vine path.branch-red    { stroke: rgba(255,107,107,.30); }
+.vine path.branch-yellow { stroke: rgba(240,192,74,.30); }
+.vine path.branch-blue   { stroke: rgba(99,164,255,.30); }
+.vine path.branch-red.live    { stroke: rgba(255,107,107,.75); }
+.vine path.branch-yellow.live { stroke: rgba(240,192,74,.75); }
+.vine path.branch-blue.live   { stroke: rgba(99,164,255,.75); }
 .vine .leaf { fill: var(--accent-soft); opacity: .55; }
+.vine .red-leaf    { fill: var(--red);    opacity: .3; }
+.vine .yellow-leaf { fill: var(--yellow); opacity: .3; }
+.vine .blue-leaf   { fill: var(--blue);   opacity: .3; }
 .vine .fork-dot { fill: var(--bg); stroke: var(--line); stroke-width: 3; }
 .vine text.branch-label {
   font-family: var(--mono);
@@ -397,8 +429,9 @@ code, pre { font-family: var(--mono); }
   text-transform: uppercase;
   text-anchor: middle;
 }
-.vine text.red-label  { fill: var(--red); }
-.vine text.blue-label { fill: var(--blue); }
+.vine text.red-label    { fill: var(--red); }
+.vine text.yellow-label { fill: var(--yellow); }
+.vine text.blue-label   { fill: var(--blue); }
 .vine text.seed-label { fill: var(--text-faint); font-family: var(--mono); font-size: 13px; text-anchor: middle; letter-spacing: .14em; }
 
 .nodes { position: absolute; inset: 0; }
@@ -415,9 +448,11 @@ code, pre { font-family: var(--mono); }
 .node-dot.done    { background: var(--accent); border-color: var(--accent); }
 .node-dot.current { border-color: var(--accent); box-shadow: 0 0 0 5px var(--accent-glow); animation: pulse 2.6s ease-in-out infinite; }
 .node-dot.red     { border-color: var(--red); }
+.node-dot.yellow  { border-color: var(--yellow); }
 .node-dot.blue    { border-color: var(--blue); }
-.node-dot.red.done  { background: var(--red); }
-.node-dot.blue.done { background: var(--blue); }
+.node-dot.red.done    { background: var(--red); }
+.node-dot.yellow.done { background: var(--yellow); }
+.node-dot.blue.done   { background: var(--blue); }
 
 @keyframes pulse {
   0%, 100% { box-shadow: 0 0 0 5px var(--accent-glow); }
@@ -443,6 +478,13 @@ code, pre { font-family: var(--mono); }
 }
 .node-card.side-left  { --nudge: -3px; text-align: right; }
 .node-card.side-right { --nudge:  3px; }
+
+/* branch modules thread onto their own stem, so they centre on it */
+.node-card.side-center {
+  width: 210px;
+  transform: translate(-50%, -50%);
+}
+.node-card.side-center:hover { transform: translate(-50%, -50%) translateY(-2px); }
 .node-card .kicker {
   font-family: var(--mono);
   font-size: 10.5px;
@@ -460,17 +502,26 @@ code, pre { font-family: var(--mono); }
 .node-card.locked { opacity: .48; cursor: not-allowed; }
 .node-card.locked:hover { transform: translateY(-50%); border-color: var(--line); box-shadow: none; }
 .node-card.done  { border-color: var(--accent-soft); }
-.node-card.red   .kicker { color: var(--red); }
-.node-card.blue  .kicker { color: var(--blue); }
-.node-card.red   .bar i { background: var(--red); }
-.node-card.blue  .bar i { background: var(--blue); }
-.node-card.red:hover  { border-color: rgba(255,107,107,.5); }
-.node-card.blue:hover { border-color: rgba(99,164,255,.5); }
+.node-card.current { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); }
+.node-card.red    .kicker { color: var(--red); }
+.node-card.yellow .kicker { color: var(--yellow); }
+.node-card.blue   .kicker { color: var(--blue); }
+.node-card.red    .bar i { background: var(--red); }
+.node-card.yellow .bar i { background: var(--yellow); }
+.node-card.blue   .bar i { background: var(--blue); }
+.node-card.red:hover    { border-color: rgba(255,107,107,.5); }
+.node-card.yellow:hover { border-color: rgba(240,192,74,.5); }
+.node-card.blue:hover   { border-color: rgba(99,164,255,.5); }
+.node-card.red.current    { border-color: var(--red);    box-shadow: 0 0 0 4px rgba(255,107,107,.14); }
+.node-card.yellow.current { border-color: var(--yellow); box-shadow: 0 0 0 4px rgba(240,192,74,.14); }
+.node-card.blue.current   { border-color: var(--blue);   box-shadow: 0 0 0 4px rgba(99,164,255,.14); }
 
 /* stacked fallback for narrow screens */
 .vine-list { display: none; flex-direction: column; gap: 10px; }
 .vine-list .node-card { position: static; width: auto; transform: none; text-align: left; }
 .vine-list .node-card:hover { transform: none; }
+.vine-list .node-card.side-center { width: auto; transform: none; }
+.vine-list .node-card.side-center:hover { transform: none; }
 .vine-list .divider {
   font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--text-faint); margin: 14px 0 4px;
@@ -658,7 +709,7 @@ article.lesson h1 { font-size: 33px; margin-bottom: 12px; }
 @media (max-width: 1080px) {
   .roadmap-layout, .lesson-layout { grid-template-columns: 1fr; gap: 26px; }
   .side, .lesson-nav { position: static; }
-  .side { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .side { display: grid; grid-template-columns: repeat(2, 1fr); align-items: start; }
   .vine-scene { display: none; }
   .vine-list { display: flex; }
   .grid-3 { grid-template-columns: 1fr 1fr; }

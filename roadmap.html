@@ -42,22 +42,29 @@
     <div class="panel">
       <h4>Specialization</h4>
       <div class="team-switch" id="team-switch">
-        <button data-team="red"  class="red">Red team</button>
-        <button data-team="blue" class="blue">Blue team</button>
+        <button data-team="red"    class="red">Red</button>
+        <button data-team="yellow" class="yellow">Yellow</button>
+        <button data-team="blue"   class="blue">Blue</button>
       </div>
       <p class="locknote" id="team-note"></p>
+      <p class="wheel-note">
+        Named for the security colour wheel: <b class="c-red">red</b> breaks it,
+        <b class="c-yellow">yellow</b> builds it, <b class="c-blue">blue</b> defends it.
+      </p>
     </div>
 
     <div class="panel ai-panel">
-      <h4>◇ Independent module</h4>
-      <p>AI Security sits outside the roadmap. Step in whenever you're curious and come back exactly where you left off.</p>
-      <a class="btn btn-sm" href="lesson.html?module=ai">Open AI Security</a>
+      <h4>◇ Anytime modules</h4>
+      <p>These sit outside the roadmap entirely. Step in whenever you're curious and come back exactly where you left off.</p>
+      <a class="btn btn-sm" href="lesson.html?module=ai">AI Security</a>
+      <a class="btn btn-sm" href="lesson.html?module=cloud">Cloud Fundamentals</a>
+      <a class="btn btn-sm" href="lesson.html?module=career">Breaking In</a>
     </div>
 
     <div class="panel">
       <h4>Shortcut</h4>
       <p style="font-size:13px;color:var(--text-dim);margin:0 0 14px">
-        Already know the fundamentals? The placement test can mark the early modules complete for you.
+        Already know the fundamentals? The placement test can mark the shared trunk complete for you.
       </p>
       <a class="btn btn-sm btn-ghost" href="placement.html">Take placement test</a>
     </div>
@@ -66,44 +73,63 @@
   <section>
     <div class="vine-head">
       <h1>Your roadmap</h1>
-      <p id="vine-sub">Start at the seed and grow upward. After networking, the vine splits.</p>
+      <p id="vine-sub">Start at the seed and grow upward. After the shared trunk, the vine splits three ways.</p>
     </div>
 
     <!-- wide-screen vine -->
     <div class="vine-scene" id="scene">
-      <svg class="vine" viewBox="0 0 1000 1560" xmlns="http://www.w3.org/2000/svg">
+      <svg class="vine" viewBox="0 0 1200 2860" xmlns="http://www.w3.org/2000/svg">
         <!-- branch labels -->
-        <text class="branch-label red-label"  x="300" y="34">Red team</text>
-        <text class="branch-label blue-label" x="700" y="34">Blue team</text>
+        <text class="branch-label red-label"    x="210" y="46">Red team</text>
+        <text class="branch-label yellow-label" x="600" y="46">Yellow team</text>
+        <text class="branch-label blue-label"   x="990" y="46">Blue team</text>
 
-        <!-- branches -->
-        <path id="branch-red"  class="stem branch-red"
-              d="M 500 530 C 500 476, 300 506, 300 415 L 300 100"/>
+        <!-- the three branches, fanning out of the fork at (600, 1100) -->
+        <path id="branch-red" class="stem branch-red"
+              d="M 600 1100 C 600 1030, 210 1080, 210 970 L 210 90"/>
+        <path id="branch-yellow" class="stem branch-yellow"
+              d="M 600 1100 L 600 90"/>
         <path id="branch-blue" class="stem branch-blue"
-              d="M 500 530 C 500 476, 700 506, 700 415 L 700 100"/>
+              d="M 600 1100 C 600 1030, 990 1080, 990 970 L 990 90"/>
 
-        <!-- main trunk, drawn bottom-up -->
+        <!-- the shared trunk, growing bottom-up through eight core modules -->
         <path id="trunk" class="stem"
-              d="M 500 1505
-                 C 500 1440, 430 1425, 430 1350
-                 C 430 1275, 570 1250, 570 1170
-                 C 570 1090, 430 1070, 430 990
-                 C 430 910, 570 890, 570 810
-                 C 570 730, 500 705, 500 630
-                 L 500 530"/>
+              d="M 600 2800
+                 C 600 2740, 530 2725, 530 2660
+                 C 530 2590, 670 2560, 670 2460
+                 C 670 2370, 530 2350, 530 2260
+                 C 530 2180, 670 2150, 670 2060
+                 C 670 1970, 530 1950, 530 1860
+                 C 530 1780, 670 1750, 670 1660
+                 C 670 1570, 530 1550, 530 1460
+                 C 530 1380, 600 1350, 600 1260
+                 L 600 1100"/>
 
         <!-- leaves along the trunk -->
         <g id="leaves">
-          <path class="leaf" d="M470 1440 c-40 -6 -66 -26 -70 -58 34 -4 62 16 70 58Z"/>
-          <path class="leaf" d="M498 1262 c38 -10 66 -2 82 -32 -32 -14 -66 -2 -82 32Z"/>
-          <path class="leaf" d="M500 1082 c-38 -10 -66 -2 -82 -32 32 -14 66 -2 82 32Z"/>
-          <path class="leaf" d="M498 902 c38 -10 66 -2 82 -32 -32 -14 -66 -2 -82 32Z"/>
-          <path class="leaf" d="M500 722 c-36 -12 -62 -6 -80 -34 32 -12 64 2 80 34Z"/>
+          <path class="leaf" d="M572 2742 c-40 -6 -66 -26 -70 -58 34 -4 62 16 70 58Z"/>
+          <path class="leaf" d="M598 2562 c38 -10 66 -2 82 -32 -32 -14 -66 -2 -82 32Z"/>
+          <path class="leaf" d="M600 2362 c-38 -10 -66 -2 -82 -32 32 -14 66 -2 82 32Z"/>
+          <path class="leaf" d="M598 2162 c38 -10 66 -2 82 -32 -32 -14 -66 -2 -82 32Z"/>
+          <path class="leaf" d="M600 1962 c-38 -10 -66 -2 -82 -32 32 -14 66 -2 82 32Z"/>
+          <path class="leaf" d="M598 1762 c38 -10 66 -2 82 -32 -32 -14 -66 -2 -82 32Z"/>
+          <path class="leaf" d="M600 1562 c-38 -10 -66 -2 -82 -32 32 -14 66 -2 82 32Z"/>
+          <path class="leaf" d="M596 1362 c34 -12 62 -6 80 -34 -32 -12 -64 2 -80 34Z"/>
         </g>
 
-        <!-- fork + seed markers -->
-        <circle class="fork-dot" cx="500" cy="530" r="7"/>
-        <text class="seed-label" x="500" y="1546">🌱 start here</text>
+        <!-- small leaves in the gaps along each branch -->
+        <g id="branch-leaves">
+          <path class="leaf red-leaf"    d="M208 790 c-30 -6 -50 -20 -52 -44 26 -2 46 14 52 44Z"/>
+          <path class="leaf red-leaf"    d="M212 370 c30 -6 50 -20 52 -44 -26 -2 -46 14 -52 44Z"/>
+          <path class="leaf yellow-leaf" d="M598 790 c30 -6 50 -20 52 -44 -26 -2 -46 14 -52 44Z"/>
+          <path class="leaf yellow-leaf" d="M602 370 c-30 -6 -50 -20 -52 -44 26 -2 46 14 52 44Z"/>
+          <path class="leaf blue-leaf"   d="M988 880 c-30 -6 -50 -20 -52 -44 26 -2 46 14 52 44Z"/>
+          <path class="leaf blue-leaf"   d="M992 460 c30 -6 50 -20 52 -44 -26 -2 -46 14 -52 44Z"/>
+        </g>
+
+        <!-- fork marker + seed -->
+        <circle class="fork-dot" cx="600" cy="1100" r="8"/>
+        <text class="seed-label" x="600" y="2846">🌱 start here</text>
       </svg>
       <div class="nodes" id="nodes"></div>
     </div>

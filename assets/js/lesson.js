@@ -6,9 +6,10 @@ const mod = getModule(params.get('module')) || getModule('basics');
 
 let state = Store.read();
 
-/* Entering a red/blue module themes the whole page for that side, without
+/* Entering a branch module themes the whole page for that side, without
    overwriting the learner's chosen specialization. */
-const pageTeam = (mod.track === 'red' || mod.track === 'blue') ? mod.track : state.team;
+const BRANCH_TRACKS = ['red', 'yellow', 'blue'];
+const pageTeam = BRANCH_TRACKS.includes(mod.track) ? mod.track : state.team;
 
 function currentLesson() {
   const requested = params.get('lesson');
@@ -34,7 +35,9 @@ function draftBody(lesson) {
       <strong>Content not written yet.</strong> This lesson is scaffolded but unwritten — the outline below
       is the shape it will take. Several lessons on this roadmap are fully written; look for
       <em>The CIA Triad</em>, <em>Your First Security Script</em>, <em>IP Addressing &amp; Subnetting</em>,
-      <em>Active Scanning with Nmap</em>, <em>Triage</em>, and <em>Prompt Injection &amp; Jailbreaks</em>.
+      <em>TLS &amp; What a Certificate Actually Proves</em>, <em>MITRE ATT&amp;CK</em>,
+      <em>Threat Modeling with STRIDE</em>, <em>Active Scanning with Nmap</em>, <em>Triage</em>,
+      <em>Prompt Injection &amp; Jailbreaks</em>, and <em>Certifications</em>.
       <ul class="draft-outline">
         ${outline.map(([h, d]) => `<li><span>${h}</span>${d}</li>`).join('')}
       </ul>
@@ -69,13 +72,16 @@ function render() {
   }).join('');
 
   /* article */
-  const trackName = { core: 'Core path', red: 'Red team', blue: 'Blue team', ai: 'Independent' }[mod.track];
+  const trackName = {
+    core: 'Shared trunk', red: 'Red team', yellow: 'Yellow team',
+    blue: 'Blue team', free: 'Anytime'
+  }[mod.track];
   document.getElementById('crumbs').innerHTML =
     `${trackName} / <b>${mod.title}</b> / Lesson ${idx + 1} of ${mod.lessons.length}`;
   document.getElementById('lesson-title').textContent = lesson.title;
   document.getElementById('lesson-pills').innerHTML = `
     <span class="pill"><i class="dot"></i>${lesson.mins} min</span>
-    <span class="pill">${mod.track === 'core' ? 'Foundational' : mod.track === 'ai' ? 'Anytime' : 'Specialization'}</span>
+    <span class="pill">${mod.track === 'core' ? 'Foundational' : mod.track === 'free' ? 'Anytime' : 'Specialization'}</span>
     ${done ? '<span class="pill">✓ Completed</span>' : ''}`;
   document.getElementById('lesson-summary').textContent = lesson.summary;
   document.getElementById('lesson-body').innerHTML =

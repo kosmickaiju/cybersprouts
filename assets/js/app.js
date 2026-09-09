@@ -48,7 +48,7 @@ function moduleStatus(mod, state) {
   const p = moduleProgress(mod, state);
   if (p.done === p.total) return 'done';
 
-  if (mod.track === 'ai') return p.done > 0 ? 'current' : 'open';
+  if (mod.track === 'free') return p.done > 0 ? 'current' : 'open';
 
   if (mod.track === 'core') {
     const i = CORE_ORDER.indexOf(mod.id);
@@ -59,9 +59,8 @@ function moduleStatus(mod, state) {
     return priorDone ? 'current' : 'locked';
   }
 
-  // red / blue
-  const net = moduleProgress(getModule('networking'), state);
-  if (net.done < net.total) return 'locked';
+  // red / yellow / blue
+  if (!branchesUnlocked(state)) return 'locked';
 
   // Only the branch the learner has actually chosen gets the "up next" marker;
   // the other side stays open but quiet.
@@ -74,16 +73,21 @@ function moduleStatus(mod, state) {
   return firstUnfinished && firstUnfinished.id === mod.id ? 'current' : 'open';
 }
 
+/* The fork opens once the entire shared trunk is finished. */
 function branchesUnlocked(state) {
-  const net = moduleProgress(getModule('networking'), state);
-  return net.done === net.total;
+  return CORE_ORDER.every(id => {
+    const p = moduleProgress(getModule(id), state);
+    return p.done === p.total;
+  });
 }
+
+const lastCoreModule = () => getModule(CORE_ORDER[CORE_ORDER.length - 1]);
 
 /* Overall percentage: the core spine, the AI module, and — once chosen —
    the learner's specialization. */
 function overallProgress(state) {
   const scope = CURRICULUM.filter(m =>
-    m.track === 'core' || m.track === 'ai' || m.track === state.team
+    m.track === 'core' || m.track === 'free' || m.track === state.team
   );
   const total = scope.reduce((n, m) => n + m.lessons.length, 0);
   const done = scope.reduce((n, m) => n + moduleProgress(m, state).done, 0);
@@ -118,6 +122,8 @@ function renderHeader(active) {
         <a href="roadmap.html" class="${active === 'roadmap' ? 'active' : ''}">Roadmap</a>
         <a href="placement.html" class="${active === 'placement' ? 'active' : ''}">Placement test</a>
         <a href="lesson.html?module=ai" class="ai-link">AI Security</a>
+        <a href="lesson.html?module=cloud" class="ai-link">Cloud</a>
+        <a href="lesson.html?module=career" class="ai-link">Breaking In</a>
       </nav>
       <span class="pill"><i class="dot"></i>${p.done}/${p.total} lessons</span>
     </div>`;

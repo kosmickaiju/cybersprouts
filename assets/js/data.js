@@ -1,5 +1,7 @@
 /* Cybersprouts — curriculum data for the mockup.
-   Coordinates are on a 1000 x 1560 design canvas (see roadmap.html vine SVG). */
+   Coordinates are on a 1200 x 2860 design canvas (see roadmap.html vine SVG).
+   Core modules sit on the winding trunk; branch modules sit centred on one of
+   the three columns above the fork; independent modules have no position. */
 
 const CURRICULUM = [
   /* ---------------------------------------------------------------- CORE */
@@ -9,14 +11,15 @@ const CURRICULUM = [
     short: 'Foundations',
     track: 'core',
     blurb: 'The vocabulary, mental models, and job map you need before anything else makes sense.',
-    pos: { x: 430, y: 1350, side: 'left' },
+    pos: { x: 530, y: 2660, side: 'left' },
     lessons: [
       { id: 'what-is-cyber', title: 'What Is Cybersecurity?', mins: 8, summary: 'Why the field exists, what practitioners actually do all day, and where it sits inside a company.' },
       { id: 'cia-triad', title: 'The CIA Triad', mins: 12, summary: 'Confidentiality, integrity, and availability — the three properties every control is trying to protect.', showcase: true },
       { id: 'threats-actors', title: 'Threats, Actors & Risk', mins: 10, summary: 'Threat vs. vulnerability vs. risk, and who is actually on the other side of the keyboard.' },
       { id: 'social-engineering', title: 'Social Engineering & Phishing', mins: 14, summary: 'Why people are the softest target, and the patterns behind pretexting, phishing, and vishing.' },
       { id: 'defense-in-depth', title: 'Controls & Defense in Depth', mins: 10, summary: 'Preventive, detective, and corrective controls, and why you layer them instead of picking one.' },
-      { id: 'careers', title: 'Jobs in Cybersecurity', mins: 12, summary: 'A tour of the roles — SOC analyst, pentester, GRC, AppSec — and what a first year in each looks like.' }
+      { id: 'law-ethics', title: 'The Law, Ethics & Responsible Disclosure', mins: 14, summary: 'Computer misuse law in plain terms, what authorization actually means, and how to report a bug you stumbled into.' },
+      { id: 'careers', title: 'Jobs in Cybersecurity', mins: 12, summary: 'A tour of the roles — SOC analyst, pentester, AppSec, GRC — and what a first year in each looks like.' }
     ]
   },
   {
@@ -25,7 +28,7 @@ const CURRICULUM = [
     short: 'Python',
     track: 'core',
     blurb: 'Enough Python to automate the boring parts and read other people\'s tooling without fear.',
-    pos: { x: 570, y: 1170, side: 'right' },
+    pos: { x: 670, y: 2460, side: 'right' },
     lessons: [
       { id: 'setup', title: 'Setup & Syntax Basics', mins: 15, summary: 'Getting Python running, the REPL, variables, and how indentation carries meaning.' },
       { id: 'data-structures', title: 'Lists, Dicts & Control Flow', mins: 18, summary: 'The four data structures you will use constantly, plus loops and conditionals.' },
@@ -42,13 +45,14 @@ const CURRICULUM = [
     short: 'Terminal',
     track: 'core',
     blurb: 'The command line stops being intimidating and starts being the fastest tool you own.',
-    pos: { x: 430, y: 990, side: 'left' },
+    pos: { x: 530, y: 2260, side: 'left' },
     lessons: [
       { id: 'why-cli', title: 'Why the Command Line Matters', mins: 7, summary: 'Where a shell beats a GUI, and why almost every security tool ships as a CLI first.' },
       { id: 'bash-vs-zsh', title: 'Bash vs. Zsh (and Friends)', mins: 10, summary: 'What a shell actually is, how bash and zsh differ, and which one you are already using.' },
       { id: 'navigation', title: 'Navigating the Filesystem', mins: 12, summary: 'Paths, cd, ls, find, and building a mental map of a machine you have never seen.' },
       { id: 'text-tools', title: 'Text Processing: grep, sed, awk', mins: 20, summary: 'The three tools that turn a 400 MB log file into the six lines you care about.' },
       { id: 'pipes-scripting', title: 'Pipes, Redirection & Shell Scripting', mins: 18, summary: 'Chaining small tools into one command, then saving that command as a reusable script.' },
+      { id: 'git', title: 'Version Control with Git', mins: 18, summary: 'Cloning tools, reading a diff, and why git history is where secrets go to be discovered.' },
       { id: 'permissions', title: 'Permissions, Users & sudo', mins: 14, summary: 'Reading rwx bits, understanding ownership, and why sudo is a security boundary.' }
     ]
   },
@@ -58,7 +62,7 @@ const CURRICULUM = [
     short: 'Op. Systems',
     track: 'core',
     blurb: 'How Windows and Linux really work underneath — because that is where attacks land.',
-    pos: { x: 570, y: 810, side: 'right' },
+    pos: { x: 670, y: 2060, side: 'right' },
     lessons: [
       { id: 'os-concepts', title: 'How an Operating System Works', mins: 14, summary: 'Kernel vs. userland, processes, memory, and the system calls that connect them.' },
       { id: 'linux-fundamentals', title: 'Linux Fundamentals', mins: 20, summary: 'The filesystem hierarchy, package managers, services, and where Linux keeps its secrets.' },
@@ -73,26 +77,72 @@ const CURRICULUM = [
     title: 'Networking Fundamentals',
     short: 'Networking',
     track: 'core',
-    blurb: 'The last shared checkpoint. After this, the path forks toward red or blue.',
-    pos: { x: 500, y: 630, side: 'left' },
+    blurb: 'How data moves between machines, and every boundary an attacker has to cross.',
+    pos: { x: 530, y: 1860, side: 'left' },
     lessons: [
       { id: 'network-types', title: 'Networks, Topologies & Devices', mins: 14, summary: 'LAN, WAN, VLAN, and what switches, routers, and firewalls each actually decide.' },
       { id: 'osi-tcpip', title: 'The OSI & TCP/IP Models', mins: 16, summary: 'Seven layers, four layers, and how to use them as a debugging checklist rather than trivia.' },
       { id: 'subnetting', title: 'IP Addressing & Subnetting', mins: 28, summary: 'CIDR notation, network vs. host bits, and sizing a subnet without a calculator.', showcase: true },
       { id: 'ports-protocols', title: 'Ports, Protocols & Services', mins: 18, summary: 'The ports worth memorizing, and what an open port tells an attacker about a host.' },
       { id: 'dns-dhcp-nat', title: 'DNS, DHCP & NAT', mins: 18, summary: 'How a name becomes an address, how you get an address, and why your IP is not your IP.' },
+      { id: 'wireless', title: 'Wireless & Wi-Fi Security', mins: 16, summary: 'WPA2 vs. WPA3, evil twins, and why the coffee shop network deserves your suspicion.' },
       { id: 'wireshark', title: 'Capturing Traffic with Wireshark', mins: 22, summary: 'Reading a packet capture, following a TCP stream, and spotting cleartext credentials.' }
     ]
   },
+  {
+    id: 'crypto',
+    title: 'Cryptography Essentials',
+    short: 'Cryptography',
+    track: 'core',
+    blurb: 'The concepts every other module quietly assumes. Almost no math required.',
+    pos: { x: 670, y: 1660, side: 'right' },
+    lessons: [
+      { id: 'why-crypto', title: 'What Cryptography Can and Cannot Do', mins: 10, summary: 'The problems encryption genuinely solves, and why "just encrypt it" is never a whole answer.' },
+      { id: 'hashing', title: 'Hashing vs. Encryption', mins: 14, summary: 'One is one-way, one is reversible, and confusing the two is the classic beginner mistake.' },
+      { id: 'symmetric-asymmetric', title: 'Symmetric & Asymmetric Keys', mins: 16, summary: 'Shared secrets versus key pairs, and why every real system ends up using both together.' },
+      { id: 'tls-certs', title: 'TLS & What a Certificate Actually Proves', mins: 20, summary: 'The handshake step by step, what a certificate authority vouches for, and what a padlock does not mean.', showcase: true },
+      { id: 'passwords', title: 'Storing Passwords Properly', mins: 16, summary: 'Salting, slow hashing, and why bcrypt or argon2 rather than the SHA-256 you already know.' },
+      { id: 'crypto-failures', title: 'How Crypto Fails in Practice', mins: 14, summary: 'Home-made algorithms, reused nonces, expired certificates, and keys committed to git.' }
+    ]
+  },
+  {
+    id: 'web',
+    title: 'Web & HTTP Fundamentals',
+    short: 'The Web',
+    track: 'core',
+    blurb: 'Most attacks and most jobs are web-shaped. This is how the web actually works.',
+    pos: { x: 530, y: 1460, side: 'left' },
+    lessons: [
+      { id: 'http-basics', title: 'Requests, Responses & Status Codes', mins: 14, summary: 'Anatomy of an HTTP exchange, the methods that matter, and reading a response as a diagnostic.' },
+      { id: 'cookies-sessions', title: 'Cookies, Sessions & Tokens', mins: 18, summary: 'How a stateless protocol remembers who you are, and everywhere that memory can be stolen.' },
+      { id: 'browser-model', title: 'The Browser Security Model', mins: 20, summary: 'Same-origin policy, CORS, and the boundaries that keep one tab out of another\'s business.' },
+      { id: 'web-architecture', title: 'Anatomy of a Modern Web App', mins: 16, summary: 'Client, server, API, database, CDN — and which of those an attacker can actually reach.' },
+      { id: 'devtools', title: 'Reading Traffic with Browser DevTools', mins: 16, summary: 'Inspecting requests, replaying them modified, and seeing exactly what a page sends on your behalf.' }
+    ]
+  },
+  {
+    id: 'attack',
+    title: 'Attacker Methodology',
+    short: 'Methodology',
+    track: 'core',
+    blurb: 'The last shared checkpoint: how an intrusion unfolds. Then you choose a side.',
+    pos: { x: 600, y: 1260, side: 'right' },
+    lessons: [
+      { id: 'kill-chain', title: 'The Cyber Kill Chain', mins: 12, summary: 'Seven stages from reconnaissance to actions on objectives, and where a defender can break the chain.' },
+      { id: 'mitre-attack', title: 'MITRE ATT&CK: Tactics & Techniques', mins: 20, summary: 'The matrix everyone references, how to read it, and how to map a real incident onto it.', showcase: true },
+      { id: 'case-study', title: 'Walking Through a Real Intrusion', mins: 22, summary: 'One breach start to finish, annotated with the technique used at every step.' },
+      { id: 'choosing-side', title: 'Red, Yellow or Blue?', mins: 10, summary: 'What a day looks like on each branch, what each tends to pay, and why the choice is not permanent.' }
+    ]
+  },
 
-  /* ----------------------------------------------------------------- RED */
+  /* ------------------------------------------------------------ RED TEAM */
   {
     id: 'red-recon',
     title: 'Recon & Enumeration',
     short: 'Recon',
     track: 'red',
     blurb: 'Everything that happens before an exploit — mapping the target, legally and thoroughly.',
-    pos: { x: 300, y: 415, side: 'left' },
+    pos: { x: 210, y: 970, side: 'center' },
     lessons: [
       { id: 'pentest-lifecycle', title: 'The Pentest Lifecycle', mins: 12, summary: 'Scoping, recon, exploitation, post-exploitation, reporting — the shape of every engagement.' },
       { id: 'rules-of-engagement', title: 'Scope, Rules of Engagement & Ethics', mins: 14, summary: 'Authorization letters, out-of-scope assets, and the line between testing and a crime.' },
@@ -107,7 +157,7 @@ const CURRICULUM = [
     short: 'Exploitation',
     track: 'red',
     blurb: 'Turning a finding into proven impact, then writing it up so someone can fix it.',
-    pos: { x: 300, y: 265, side: 'left' },
+    pos: { x: 210, y: 550, side: 'center' },
     lessons: [
       { id: 'vuln-research', title: 'Vulnerability Research & CVEs', mins: 16, summary: 'Reading advisories, mapping a version to known bugs, and judging exploitability.' },
       { id: 'owasp', title: 'Web Exploitation: The OWASP Top 10', mins: 30, summary: 'Injection, broken access control, SSRF — hands-on against a deliberately vulnerable app.' },
@@ -122,7 +172,7 @@ const CURRICULUM = [
     short: 'CTF Prep',
     track: 'red',
     blurb: 'Competitive practice that keeps your skills sharp and builds a portfolio in public.',
-    pos: { x: 300, y: 115, side: 'left' },
+    pos: { x: 210, y: 130, side: 'center' },
     lessons: [
       { id: 'how-ctfs-work', title: 'How CTFs Work', mins: 10, summary: 'Jeopardy vs. attack-defense, scoring, and which platforms to start on.' },
       { id: 'crypto-encoding', title: 'Crypto & Encoding Challenges', mins: 22, summary: 'Telling encoding from encryption, and the classic weaknesses that show up in challenges.' },
@@ -132,20 +182,97 @@ const CURRICULUM = [
     ]
   },
 
-  /* ---------------------------------------------------------------- BLUE */
+  /* --------------------------------------------------------- YELLOW TEAM */
+  {
+    id: 'appsec-design',
+    title: 'Secure Design & Threat Modeling',
+    short: 'Secure Design',
+    track: 'yellow',
+    blurb: 'Finding design flaws on a whiteboard, before they cost a quarter to unwind.',
+    pos: { x: 600, y: 970, side: 'center' },
+    lessons: [
+      { id: 'yellow-team', title: 'What the Yellow Team Does', mins: 10, summary: 'Where builders sit in the security colour wheel, and why AppSec is the shortest pivot for a developer.' },
+      { id: 'threat-modeling', title: 'Threat Modeling with STRIDE', mins: 22, summary: 'Draw the system, find the trust boundaries, and ask what goes wrong at each one.', showcase: true },
+      { id: 'trust-boundaries', title: 'Trust Boundaries & Data Flow', mins: 16, summary: 'Tracing untrusted input through a system and deciding exactly where it must be validated.' },
+      { id: 'security-requirements', title: 'Writing Security Requirements', mins: 14, summary: 'Turning "make it secure" into acceptance criteria an engineer can actually build against.' },
+      { id: 'design-patterns', title: 'Secure Design Patterns', mins: 16, summary: 'Fail closed, least privilege, and safe defaults — expressed as code rather than principles.' }
+    ]
+  },
+  {
+    id: 'appsec-review',
+    title: 'Secure Code Review & Testing',
+    short: 'Code Review',
+    track: 'yellow',
+    blurb: 'Finding real bugs in real code, by hand and with tooling that does not drown you in noise.',
+    pos: { x: 600, y: 550, side: 'center' },
+    lessons: [
+      { id: 'code-review', title: 'Reviewing Code for Security', mins: 22, summary: 'Where to look first, what to grep for, and how to review a diff you did not write.' },
+      { id: 'sast-dast', title: 'SAST, DAST & IAST', mins: 18, summary: 'What each class of scanner can and cannot see, and why every result still needs a human.' },
+      { id: 'dependency-scanning', title: 'Dependency & Composition Analysis', mins: 16, summary: 'Most of your code is someone else\'s. Knowing what you shipped and whether it is vulnerable.' },
+      { id: 'fuzzing', title: 'Fuzzing Basics', mins: 18, summary: 'Throwing malformed input at a parser and learning to read the crashes it produces.' },
+      { id: 'triage-findings', title: 'Triaging Scanner Findings', mins: 14, summary: 'Exploitability over severity score, and how to avoid crying wolf at your own developers.' }
+    ]
+  },
+  {
+    id: 'appsec-supply',
+    title: 'Supply Chain & CI/CD Security',
+    short: 'Supply Chain',
+    track: 'yellow',
+    blurb: 'The build pipeline is production. Securing how code becomes a running system.',
+    pos: { x: 600, y: 130, side: 'center' },
+    lessons: [
+      { id: 'supply-chain', title: 'The Software Supply Chain', mins: 16, summary: 'From a package on a registry to a container in production, and every place to slip something in.' },
+      { id: 'secrets', title: 'Secrets Management', mins: 18, summary: 'Keeping credentials out of code, out of images, and out of your git history.' },
+      { id: 'pipeline-security', title: 'Securing the CI/CD Pipeline', mins: 20, summary: 'Build servers hold production keys. Treating the pipeline as the crown jewel it already is.' },
+      { id: 'sbom', title: 'SBOMs & Build Provenance', mins: 14, summary: 'Knowing exactly what went into a build, and being able to prove where it came from.' },
+      { id: 'container-security', title: 'Container & Image Security', mins: 18, summary: 'Base images, least-privilege containers, and what an image scanner actually checks.' }
+    ]
+  },
+
+  /* ----------------------------------------------------------- BLUE TEAM */
   {
     id: 'blue-soc',
     title: 'SOC Operations',
     short: 'SOC',
     track: 'blue',
     blurb: 'The most common entry point into security: watching, triaging, and responding.',
-    pos: { x: 700, y: 415, side: 'right' },
+    pos: { x: 990, y: 970, side: 'center' },
     lessons: [
       { id: 'soc-life', title: 'Life in a Security Operations Center', mins: 12, summary: 'Tiers, shifts, queues, and what a realistic first-week ticket actually looks like.' },
-      { id: 'siem-basics', title: 'Log Sources & SIEM Basics', mins: 20, summary: 'Normalization, indexing, and writing your first useful search query.' },
+      { id: 'siem-basics', title: 'Log Sources & SIEM Basics', mins: 20, summary: 'Normalization, indexing, and writing your first genuinely useful search query.' },
       { id: 'triage', title: 'Triage: Signal, Noise & False Positives', mins: 24, summary: 'Working an alert end to end and deciding escalate, close, or investigate further.', showcase: true },
       { id: 'detection-engineering', title: 'Detection Engineering 101', mins: 22, summary: 'Turning attacker behavior into a rule, then tuning it so it survives contact with reality.' },
       { id: 'incident-response', title: 'The Incident Response Lifecycle', mins: 20, summary: 'Prepare, detect, contain, eradicate, recover, learn — and who does what at each step.' }
+    ]
+  },
+  {
+    id: 'blue-dfir',
+    title: 'Digital Forensics & IR',
+    short: 'DFIR',
+    track: 'blue',
+    blurb: 'When it has already happened: preserving the evidence and reconstructing the story.',
+    pos: { x: 990, y: 760, side: 'center' },
+    lessons: [
+      { id: 'dfir-intro', title: 'Forensics vs. Incident Response', mins: 12, summary: 'Two disciplines sharing a toolbox: one answers "what happened", the other "make it stop".' },
+      { id: 'evidence', title: 'Evidence Handling & Chain of Custody', mins: 16, summary: 'Order of volatility, write blockers, and documentation that would survive a courtroom.' },
+      { id: 'disk-forensics', title: 'Disk & Filesystem Forensics', mins: 22, summary: 'Imaging a drive, recovering deleted files, and reading filesystem timestamps carefully.' },
+      { id: 'memory-forensics', title: 'Memory Forensics', mins: 20, summary: 'Capturing RAM and pulling out processes, connections, and code that never touched disk.' },
+      { id: 'timelines', title: 'Building an Incident Timeline', mins: 18, summary: 'Correlating artefacts from several sources into one narrative you can defend.' }
+    ]
+  },
+  {
+    id: 'blue-malware',
+    title: 'Malware Analysis',
+    short: 'Malware',
+    track: 'blue',
+    blurb: 'Taking a sample apart safely enough to know what it did and what to hunt for next.',
+    pos: { x: 990, y: 550, side: 'center' },
+    lessons: [
+      { id: 'malware-types', title: 'Malware Families & Behaviours', mins: 14, summary: 'Droppers, loaders, RATs, ransomware — and what each one is actually trying to accomplish.' },
+      { id: 'safe-lab', title: 'Building a Safe Analysis Lab', mins: 16, summary: 'Isolated VMs, snapshots, and network controls so the sample never escapes your machine.' },
+      { id: 'static-analysis', title: 'Static Analysis', mins: 20, summary: 'Strings, hashes, imports, and packing — everything you learn without running the thing.' },
+      { id: 'dynamic-analysis', title: 'Dynamic Analysis & Sandboxing', mins: 22, summary: 'Detonating a sample and watching what it touches on disk, in the registry, and on the wire.' },
+      { id: 'iocs', title: 'Extracting IOCs & Writing Detections', mins: 18, summary: 'Turning one sample into indicators, and indicators into a rule that catches the next one.' }
     ]
   },
   {
@@ -154,7 +281,7 @@ const CURRICULUM = [
     short: 'IAM',
     track: 'blue',
     blurb: 'Identity is the new perimeter. This is how you hold it.',
-    pos: { x: 700, y: 265, side: 'right' },
+    pos: { x: 990, y: 340, side: 'center' },
     lessons: [
       { id: 'authn-authz', title: 'Authentication vs. Authorization', mins: 12, summary: 'Proving who you are versus deciding what you may do, and why conflating them causes breaches.' },
       { id: 'mfa-sso', title: 'MFA, SSO, SAML & OAuth', mins: 24, summary: 'How a federated login actually flows, and where each protocol tends to go wrong.' },
@@ -169,7 +296,7 @@ const CURRICULUM = [
     short: 'GRC',
     track: 'blue',
     blurb: 'The least technical path into security, and often the fastest one to a seat at the table.',
-    pos: { x: 700, y: 115, side: 'right' },
+    pos: { x: 990, y: 130, side: 'center' },
     lessons: [
       { id: 'what-grc-does', title: 'What GRC Actually Does', mins: 12, summary: 'Why a company needs someone translating between engineers, executives, and regulators.' },
       { id: 'risk-assessment', title: 'Risk Assessment & Risk Registers', mins: 20, summary: 'Likelihood, impact, inherent vs. residual risk, and writing a risk statement that holds up.' },
@@ -179,13 +306,14 @@ const CURRICULUM = [
     ]
   },
 
-  /* ------------------------------------------------------------------ AI */
+  /* -------------------------------------------------- INDEPENDENT MODULES
+     No position on the vine — reachable from anywhere, at any time. */
   {
     id: 'ai',
     title: 'AI Security',
     short: 'AI Security',
-    track: 'ai',
-    blurb: 'An independent module. Jump in at any point on the roadmap and come back where you left off.',
+    track: 'free',
+    blurb: 'Securing systems built on models that cannot reliably tell instructions from data.',
     pos: null,
     lessons: [
       { id: 'llm-basics', title: 'How LLMs Work (Enough to Break Them)', mins: 18, summary: 'Tokens, context windows, and why a model cannot reliably separate instructions from data.' },
@@ -194,11 +322,51 @@ const CURRICULUM = [
       { id: 'securing-ai-apps', title: 'Securing AI Applications', mins: 26, summary: 'Threat modeling a RAG or agent system: tool permissions, output handling, and isolation.' },
       { id: 'ai-for-defenders', title: 'AI for Defenders', mins: 18, summary: 'Where models genuinely help a SOC, and where they quietly manufacture confident nonsense.' }
     ]
+  },
+  {
+    id: 'cloud',
+    title: 'Cloud Fundamentals',
+    short: 'Cloud',
+    track: 'free',
+    blurb: 'Most infrastructure lives here now — and most of it is misconfigured somewhere.',
+    pos: null,
+    lessons: [
+      { id: 'cloud-models', title: 'IaaS, PaaS, SaaS & Shared Responsibility', mins: 16, summary: 'Which parts the provider secures, which parts are yours, and where people get that boundary wrong.' },
+      { id: 'cloud-iam', title: 'Cloud IAM & Over-Permissive Roles', mins: 22, summary: 'Policies, roles, and why a wildcard in an IAM policy is the modern equivalent of an open port.' },
+      { id: 'storage-exposure', title: 'Storage Exposure & Public Buckets', mins: 16, summary: 'The single most common cloud breach, and why it keeps happening to careful people.' },
+      { id: 'cloud-network', title: 'Cloud Networking & Segmentation', mins: 18, summary: 'VPCs and security groups — translating what you learned about networks to a cloud console.' },
+      { id: 'cloud-logging', title: 'Cloud Logging & Detection', mins: 18, summary: 'What the audit log records, what it silently does not, and what to turn on before you need it.' }
+    ]
+  },
+  {
+    id: 'career',
+    title: 'Breaking In',
+    short: 'Breaking In',
+    track: 'free',
+    blurb: 'The part nobody teaches: turning what you learn here into an actual job.',
+    pos: null,
+    lessons: [
+      { id: 'map-the-field', title: 'Mapping the Field to Your Life', mins: 12, summary: 'Matching roles to what you enjoy, what you can tolerate, and where you actually live.' },
+      { id: 'home-lab', title: 'Building a Home Lab', mins: 20, summary: 'A free lab on the machine you already own, and what to actually do once it boots.' },
+      { id: 'practice-platforms', title: 'Practice Platforms & Ranges', mins: 14, summary: 'TryHackMe, Hack The Box, LetsDefend — and using them without collecting badges forever.' },
+      { id: 'certifications', title: 'Certifications: What They Are Worth', mins: 18, summary: 'Which certs open doors for a beginner, which are mid-career, and which can wait years.', showcase: true },
+      { id: 'portfolio', title: 'Writing Up Your Work in Public', mins: 16, summary: 'Write-ups, a simple site, and a GitHub that shows a habit rather than a resume line.' },
+      { id: 'job-hunt', title: 'The Job Hunt', mins: 20, summary: 'Resumes that survive filters, adjacent roles that become security roles, and interviewing without experience.' }
+    ]
   }
 ];
 
-/* Order the core track walks in. */
-const CORE_ORDER = ['basics', 'python', 'terminal', 'os', 'networking'];
+/* The order the shared trunk is walked in. */
+const CORE_ORDER = ['basics', 'python', 'terminal', 'os', 'networking', 'crypto', 'web', 'attack'];
+
+/* The three specializations above the fork, named for the security colour
+   wheel: red breaks it, yellow builds it, blue defends it. */
+const BRANCHES = [
+  { id: 'red',    name: 'Red team',    tagline: 'Offensive — break it' },
+  { id: 'yellow', name: 'Yellow team', tagline: 'Builders — build it right' },
+  { id: 'blue',   name: 'Blue team',   tagline: 'Defensive — defend it' }
+];
+
 
 /* ------------------------------------------------------ showcase lesson bodies */
 const LESSON_BODIES = {
@@ -365,6 +533,136 @@ Broadcast: 192.168.10.255</code></pre>
     </div>
   `
 };
+
+
+
+/* Bodies for the modules added after the first pass. Kept separate from the
+   original block purely to keep each one readable. */
+Object.assign(LESSON_BODIES, {
+  'crypto/tls-certs': `
+    <p>Everyone knows the padlock means "secure". Almost nobody can say what it actually proves — and the gap between those two things is where a lot of bad security advice lives.</p>
+    <h3>What the handshake does</h3>
+    <p>When your browser connects to a site over HTTPS, three things get settled before any real data moves:</p>
+    <pre><code>1. Client hello    → "I speak TLS 1.3, here are my ciphers"
+2. Server hello    → picks a cipher, sends its certificate
+3. Verify          → client checks the cert chains to a trusted CA
+4. Key exchange    → both sides derive a shared symmetric key
+5. Encrypted       → everything after this point uses that key</code></pre>
+    <p>Note step 4. Asymmetric crypto — the slow, expensive kind — is used only to agree on a key. Everything after that is symmetric, because it is far faster. This is the pattern you met in <strong>Symmetric &amp; Asymmetric Keys</strong>, and it is how essentially every real protocol works.</p>
+    <h3>What the certificate actually proves</h3>
+    <p>A standard certificate proves exactly one thing: <strong>whoever holds this key controls this domain name</strong>. A certificate authority verified that, and nothing more.</p>
+    <p>It does <em>not</em> prove:</p>
+    <ul>
+      <li>that the site is honest, safe, or run by a real company</li>
+      <li>that the business behind it is who you think it is</li>
+      <li>that the code you are about to run is trustworthy</li>
+    </ul>
+    <p>A phishing site can get a valid certificate in about ninety seconds, for free. It will show a padlock. The padlock means "nobody is reading this connection in transit" — a statement about the pipe, not about who is at the other end of it.</p>
+    <div class="callout">
+      <span class="callout-tag">Try it</span>
+      <p>Click the padlock on any site and open the certificate details. Find the issuer, the subject, and the expiry date. Then find the chain: the intermediate that signed it, and the root your operating system already trusts.</p>
+    </div>
+    <h3>Where trust actually comes from</h3>
+    <p>Your machine ships with a list of root certificate authorities it trusts unconditionally. Everything else chains up to one of those. This is worth sitting with: the security of the entire web rests on a few hundred organizations behaving, plus your OS vendor curating that list carefully.</p>
+    <p>That is also why a corporate laptop can transparently inspect your HTTPS traffic — IT installed their own root CA on the machine. The padlock still appears. It is still telling the truth. It is just no longer telling you what you assumed.</p>
+  `,
+
+  'attack/mitre-attack': `
+    <p>ATT&amp;CK is a catalogue of things attackers actually do, assembled from real intrusions. Both branches of this roadmap use it constantly: red teams to plan, blue teams to detect. Learning to read it is one of the highest-leverage hours you will spend.</p>
+    <h3>Tactics vs. techniques</h3>
+    <p>The distinction is the whole thing:</p>
+    <ul>
+      <li>A <strong>tactic</strong> is the attacker's <em>goal</em> at that moment. "Persistence." "Credential Access." There are around fourteen, and they read roughly left to right as an intrusion unfolds.</li>
+      <li>A <strong>technique</strong> is <em>how</em> they achieve it. Under Persistence you will find scheduled tasks, registry run keys, valid accounts, and dozens more.</li>
+    </ul>
+    <pre><code>TACTIC              TECHNIQUE (example)
+Initial Access      T1566  Phishing
+Execution           T1059  Command & Scripting Interpreter
+Persistence         T1053  Scheduled Task/Job
+Privilege Esc.      T1548  Abuse Elevation Control Mechanism
+Defense Evasion     T1070  Indicator Removal
+Credential Access   T1003  OS Credential Dumping
+Discovery           T1087  Account Discovery
+Lateral Movement    T1021  Remote Services
+Exfiltration        T1041  Exfiltration Over C2 Channel
+Impact              T1486  Data Encrypted for Impact</code></pre>
+    <h3>Why the numbering matters</h3>
+    <p>Those T-numbers are a shared vocabulary. A threat intel report, a detection rule, a pentest finding, and a vendor's marketing can all point at T1003 and mean precisely the same thing. It turns "the attacker stole some passwords" into something you can search, detect, and measure coverage against.</p>
+    <div class="callout">
+      <span class="callout-tag">Try it</span>
+      <p>Open the ATT&amp;CK matrix and pick any technique. Read its detection section, then its mitigations. Notice that they are written for two different people — that is the red/blue split, on one page.</p>
+    </div>
+    <h3>The honest limitation</h3>
+    <p>ATT&amp;CK describes what has been <em>observed</em>. It is a catalogue, not a theory, and coverage is not the same as safety — a mature team can map to hundreds of techniques and still miss something novel. Treat it as a checklist for gaps you did not know you had, not as a scoreboard.</p>
+    <p>You are about to choose a branch. Whichever you pick, you will come back to this matrix constantly.</p>
+  `,
+
+  'appsec-design/threat-modeling': `
+    <p>Threat modeling is the cheapest security activity there is. You need a whiteboard and an hour, and you find the class of bug that no scanner will ever catch: the one where the code is correct and the <em>design</em> is wrong.</p>
+    <h3>Four questions</h3>
+    <ol>
+      <li><strong>What are we building?</strong> Draw it. Boxes for components, arrows for data.</li>
+      <li><strong>What can go wrong?</strong> This is where STRIDE comes in.</li>
+      <li><strong>What are we going to do about it?</strong> Mitigate, accept, or redesign.</li>
+      <li><strong>Did we do a good job?</strong> Revisit when the design changes.</li>
+    </ol>
+    <h3>STRIDE</h3>
+    <p>A mnemonic for the six things that go wrong. Walk each trust boundary in your diagram and ask all six:</p>
+    <pre><code>S  Spoofing                → can someone pretend to be someone else?
+T  Tampering               → can data be modified in transit or at rest?
+R  Repudiation             → can someone deny an action they took?
+I  Information Disclosure  → can data leak to someone unauthorized?
+D  Denial of Service       → can availability be destroyed?
+E  Elevation of Privilege  → can someone gain rights they should not have?</code></pre>
+    <p>Notice that STRIDE maps cleanly onto the CIA triad you met in <strong>Security Foundations</strong> — tampering is integrity, information disclosure is confidentiality, denial of service is availability. The extra three (spoofing, repudiation, elevation) are what you need once real users are involved.</p>
+    <h3>The part people skip</h3>
+    <p>Trust boundaries. A boundary is anywhere data crosses from something you control to something you do not — the browser to your API, your API to a third-party service, one microservice to another. Bugs cluster on boundaries, because that is where an assumption gets made and never checked.</p>
+    <pre><code>[Browser] ──HTTPS──▶ [API Gateway] ──▶ [Order Service] ──▶ [Postgres]
+          ▲                         ▲                  ▲
+          │                         │                  │
+      boundary 1               boundary 2         boundary 3
+   (fully untrusted)      (authn happened?)   (is the query built safely?)</code></pre>
+    <div class="callout">
+      <span class="callout-tag">Try it</span>
+      <p>Take something you have built, or any app you use daily. Draw four boxes and the arrows between them. Mark every trust boundary, then run STRIDE on just one of them. You will find something in under fifteen minutes.</p>
+    </div>
+    <h3>Do it early, keep it cheap</h3>
+    <p>A design flaw found on a whiteboard costs an hour. The same flaw found after launch costs a migration, a customer notification, and possibly a regulator. This is the single highest-return habit on the yellow branch.</p>
+  `,
+
+  'career/certifications': `
+    <p>Certifications are the most argued-about topic in this field, and most of the argument comes from people answering different questions. The useful question is narrow: <em>does this certificate get my resume past a filter, for the job I actually want, at the stage I am actually at?</em></p>
+    <h3>What certs really do</h3>
+    <p>They are a hiring filter, not an education. HR uses them to reduce a stack of 400 resumes to 40. That is genuinely valuable when you have no experience and no network — and close to worthless once you have either.</p>
+    <h3>Rough map for a beginner</h3>
+    <pre><code>CompTIA Security+     Entry-level, broad, widely recognized by HR filters.
+                      The default first cert. Required for many US
+                      government and defense-adjacent roles.
+
+CompTIA Network+      Only if networking is genuinely shaky. Otherwise
+                      skip it and let Security+ carry you.
+
+Blue Team Level 1     Hands-on, SOC-focused, far more practical than
+  / CySA+             Security+. Good second step toward a SOC role.
+
+OSCP                  Hard, hands-on, respected for pentesting. Expensive
+                      and time-expensive. Not a first cert.
+
+CISSP                 Requires five years of experience. Management-track.
+                      Ignore it for now; know that it exists.</code></pre>
+    <h3>The honest advice</h3>
+    <ul>
+      <li><strong>One entry cert, then stop.</strong> Collecting three beginner certs signals studying, not doing. A single cert plus three public write-ups beats four certs and nothing.</li>
+      <li><strong>Check job ads in your actual city</strong> before paying for anything. Search the roles you want and count which certs appear. That list beats any advice, including this page.</li>
+      <li><strong>Employer-paid beats self-paid.</strong> Many companies reimburse. Getting hired into an adjacent role — help desk, IT support, junior dev — and having them fund the cert is a very common real path.</li>
+      <li><strong>Nothing here replaces a lab.</strong> An interviewer will ask what you have broken or defended, not what you have passed.</li>
+    </ul>
+    <div class="callout">
+      <span class="callout-tag">Do this now</span>
+      <p>Open a job board, search for the role you want within commuting distance or remote, and read ten postings. Write down every certification mentioned and how often. That tally is your actual answer — everything above is just the average case.</p>
+    </div>
+  `
+});
 
 /* ------------------------------------------------------------- placement test
    Three questions per core module so no module is ever decided by a single
@@ -626,3 +924,192 @@ const RECHECK_QUESTIONS = {
     }
   ]
 };
+
+
+/* Questions for the modules added to the spine after the first pass. Appended
+   so the main bank stays grouped by module, in roadmap order. */
+PLACEMENT_QUESTIONS.push(
+  /* --- Cryptography Essentials --- */
+  {
+    module: 'crypto',
+    q: 'Hashing differs from encryption because:',
+    options: [
+      'Hashing is one-way and cannot be reversed',
+      'Hashing uses a longer key',
+      'Hashing is only used on files, not text',
+      'Hashing is faster but otherwise identical'
+    ],
+    answer: 0
+  },
+  {
+    module: 'crypto',
+    q: 'What does a standard TLS certificate actually prove?',
+    options: [
+      'That the site is safe to use',
+      'That whoever holds the key controls that domain name',
+      'That the company behind the site has been audited',
+      'That the traffic can never be decrypted by anyone'
+    ],
+    answer: 1
+  },
+  {
+    module: 'crypto',
+    q: 'Which is the right way to store user passwords?',
+    options: [
+      'Encrypted with AES so they can be recovered',
+      'Hashed with MD5 for speed',
+      'A slow hash with a per-user salt, such as bcrypt or argon2',
+      'Base64-encoded in the database'
+    ],
+    answer: 2
+  },
+
+  /* --- Web & HTTP Fundamentals --- */
+  {
+    module: 'web',
+    q: 'Which HTTP status code means the requested resource was not found?',
+    options: ['200', '301', '404', '500'],
+    answer: 2
+  },
+  {
+    module: 'web',
+    q: 'A session cookie marked <code>HttpOnly</code> cannot be:',
+    options: [
+      'Sent over an unencrypted connection',
+      'Read by JavaScript running in the page',
+      'Stored for longer than one hour',
+      'Sent to a different path on the same site'
+    ],
+    answer: 1
+  },
+  {
+    module: 'web',
+    q: 'The same-origin policy prevents:',
+    options: [
+      'A page on one origin from reading responses from another origin',
+      'Two users from logging in at the same time',
+      'A server from setting more than one cookie',
+      'HTTP requests to any external domain'
+    ],
+    answer: 0
+  },
+
+  /* --- Attacker Methodology --- */
+  {
+    module: 'attack',
+    q: 'In MITRE ATT&amp;CK, a <em>tactic</em> represents:',
+    options: [
+      'The specific tool the attacker used',
+      'The attacker\'s goal at that stage of the intrusion',
+      'The severity of the incident',
+      'The vulnerability that was exploited'
+    ],
+    answer: 1
+  },
+  {
+    module: 'attack',
+    q: 'Which of these comes earliest in the cyber kill chain?',
+    options: ['Exploitation', 'Reconnaissance', 'Lateral movement', 'Exfiltration'],
+    answer: 1
+  },
+  {
+    module: 'attack',
+    q: '<em>Lateral movement</em> describes an attacker:',
+    options: [
+      'Gaining higher privileges on the machine they already control',
+      'Moving from one compromised host to others inside the network',
+      'Copying data out to a server they control',
+      'Deleting logs to hide their activity'
+    ],
+    answer: 1
+  }
+);
+
+Object.assign(RECHECK_QUESTIONS, {
+  crypto: [
+    {
+      q: 'In HTTPS, asymmetric cryptography is used mainly to:',
+      options: [
+        'Encrypt every byte of the page',
+        'Agree on a shared symmetric session key',
+        'Compress the response',
+        'Verify the user\'s password'
+      ],
+      answer: 1
+    },
+    {
+      q: 'Adding a unique salt to each password hash primarily defeats:',
+      options: [
+        'Precomputed rainbow table attacks',
+        'Phishing',
+        'Network sniffing',
+        'SQL injection'
+      ],
+      answer: 0
+    },
+    {
+      q: 'Which of these is the riskiest decision?',
+      options: [
+        'Using TLS 1.3 instead of TLS 1.2',
+        'Designing your own encryption algorithm',
+        'Rotating keys once a year',
+        'Using a certificate from a free certificate authority'
+      ],
+      answer: 1
+    }
+  ],
+  web: [
+    {
+      q: 'Which HTTP method is expected not to change state on the server?',
+      options: ['GET', 'POST', 'PUT', 'DELETE'],
+      answer: 0
+    },
+    {
+      q: 'A <code>500</code> status code indicates:',
+      options: [
+        'The client sent a malformed request',
+        'The server hit an error handling the request',
+        'The resource moved permanently',
+        'Authentication is required'
+      ],
+      answer: 1
+    },
+    {
+      q: 'Where does a browser normally keep a session identifier?',
+      options: ['In a cookie', 'In the URL fragment', 'In the User-Agent header', 'In the DNS cache'],
+      answer: 0
+    }
+  ],
+  attack: [
+    {
+      q: 'The <em>persistence</em> tactic describes an attacker:',
+      options: [
+        'Scanning the network repeatedly',
+        'Keeping access across reboots and password changes',
+        'Encrypting files for ransom',
+        'Trying many passwords in a row'
+      ],
+      answer: 1
+    },
+    {
+      q: 'Why is ATT&amp;CK useful to a defender?',
+      options: [
+        'It ranks vulnerabilities by CVSS score',
+        'It maps observed attacker behaviour to detections you can build',
+        'It scans your network for weaknesses',
+        'It certifies that a product is secure'
+      ],
+      answer: 1
+    },
+    {
+      q: '<em>Privilege escalation</em> means:',
+      options: [
+        'Gaining higher permissions than you started with',
+        'Moving to another machine on the network',
+        'Hiding your activity from logging',
+        'Finding which accounts exist on a host'
+      ],
+      answer: 0
+    }
+  ]
+});

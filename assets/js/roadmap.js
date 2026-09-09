@@ -1,11 +1,17 @@
 /* Cybersprouts — roadmap view. Positions module nodes over the vine SVG
-   using the same 1000 x 1560 coordinate space the path is drawn in. */
+   using the same 1200 x 2860 coordinate space the paths are drawn in.
 
-const CANVAS_W = 1000;
-const CANVAS_H = 1560;
+   Core modules hang off the winding trunk on alternating sides; branch
+   modules sit centred on their own column, threaded onto the branch stem
+   like beads so the three specializations stay legible side by side. */
+
+const CANVAS_W = 1200;
+const CANVAS_H = 2860;
 
 const pctX = x => (x / CANVAS_W) * 100;
 const pctY = y => (y / CANVAS_H) * 100;
+
+const isBranch = mod => mod.track === 'red' || mod.track === 'yellow' || mod.track === 'blue';
 
 function statusLabel(status, prog) {
   if (status === 'done') return 'Complete';
@@ -14,54 +20,61 @@ function statusLabel(status, prog) {
   return status === 'current' ? 'Up next' : `${prog.total} lessons`;
 }
 
-function trackKicker(mod, index) {
-  if (mod.track === 'core') return `Module ${String(index + 1).padStart(2, '0')}`;
-  if (mod.track === 'red') return 'Red team';
-  if (mod.track === 'blue') return 'Blue team';
-  return 'Anytime';
+function trackKicker(mod) {
+  if (mod.track === 'core') {
+    return `Module ${String(CORE_ORDER.indexOf(mod.id) + 1).padStart(2, '0')}`;
+  }
+  const branch = BRANCHES.find(b => b.id === mod.track);
+  return branch ? branch.name : 'Anytime';
+}
+
+function cardMarkup(mod, status, prog) {
+  return `
+    <span class="kicker">${trackKicker(mod)}</span>
+    <h3>${mod.title}</h3>
+    <div class="meta">${statusLabel(status, prog)}</div>
+    <div class="bar"><i style="width:${prog.pct}%"></i></div>`;
 }
 
 function buildNode(mod, state) {
   const prog = moduleProgress(mod, state);
   const status = moduleStatus(mod, state);
-  const idx = CORE_ORDER.indexOf(mod.id);
-  const teamClass = mod.track === 'red' || mod.track === 'blue' ? mod.track : '';
+  const teamClass = isBranch(mod) ? mod.track : '';
   const side = mod.pos.side;
+  const out = [];
 
-  const dot = document.createElement('div');
-  dot.className = `node-dot ${status} ${teamClass}`.trim();
-  dot.style.left = pctX(mod.pos.x) + '%';
-  dot.style.top = pctY(mod.pos.y) + '%';
+  /* Core modules get a dot on the trunk; branch cards sit on the stem
+     themselves, so a separate dot would just hide behind them. */
+  if (side !== 'center') {
+    const dot = document.createElement('div');
+    dot.className = `node-dot ${status} ${teamClass}`.trim();
+    dot.style.left = pctX(mod.pos.x) + '%';
+    dot.style.top = pctY(mod.pos.y) + '%';
+    out.push(dot);
+  }
 
   const card = document.createElement(status === 'locked' ? 'div' : 'a');
   card.className = `node-card side-${side} ${status} ${teamClass}`.trim();
   if (status !== 'locked') card.href = `lesson.html?module=${mod.id}`;
   card.style.top = pctY(mod.pos.y) + '%';
+
   if (side === 'left') card.style.right = `calc(${100 - pctX(mod.pos.x)}% + 34px)`;
-  else card.style.left = `calc(${pctX(mod.pos.x)}% + 34px)`;
+  else if (side === 'right') card.style.left = `calc(${pctX(mod.pos.x)}% + 34px)`;
+  else card.style.left = pctX(mod.pos.x) + '%';
 
-  card.innerHTML = `
-    <span class="kicker">${trackKicker(mod, idx)}</span>
-    <h3>${mod.title}</h3>
-    <div class="meta">${statusLabel(status, prog)}</div>
-    <div class="bar"><i style="width:${prog.pct}%"></i></div>`;
-
-  return [dot, card];
+  card.innerHTML = cardMarkup(mod, status, prog);
+  out.push(card);
+  return out;
 }
 
 function buildListItem(mod, state) {
   const prog = moduleProgress(mod, state);
   const status = moduleStatus(mod, state);
-  const idx = CORE_ORDER.indexOf(mod.id);
-  const teamClass = mod.track === 'red' || mod.track === 'blue' ? mod.track : '';
+  const teamClass = isBranch(mod) ? mod.track : '';
   const el = document.createElement(status === 'locked' ? 'div' : 'a');
   el.className = `node-card ${status} ${teamClass}`.trim();
   if (status !== 'locked') el.href = `lesson.html?module=${mod.id}`;
-  el.innerHTML = `
-    <span class="kicker">${trackKicker(mod, idx)}</span>
-    <h3>${mod.title}</h3>
-    <div class="meta">${statusLabel(status, prog)}</div>
-    <div class="bar"><i style="width:${prog.pct}%"></i></div>`;
+  el.innerHTML = cardMarkup(mod, status, prog);
   return el;
 }
 
@@ -69,39 +82,40 @@ function render() {
   const state = Store.read();
   applyTheme(state.team);
 
-  /* --- nodes over the vine --- */
   const nodes = document.getElementById('nodes');
   const list = document.getElementById('list');
   nodes.innerHTML = '';
   list.innerHTML = '';
 
-  const positioned = CURRICULUM.filter(m => m.pos);
-  positioned.forEach(mod => buildNode(mod, state).forEach(n => nodes.appendChild(n)));
+  CURRICULUM.filter(m => m.pos).forEach(mod => {
+    buildNode(mod, state).forEach(n => nodes.appendChild(n));
+  });
 
-  /* --- stacked fallback, bottom-of-vine order --- */
+  /* Stacked fallback for narrow screens, in the same bottom-up order. */
   const addDivider = text => {
     const d = document.createElement('div');
     d.className = 'divider';
     d.textContent = text;
     list.appendChild(d);
   };
-  addDivider('Core path');
+  addDivider('Shared trunk');
   CORE_ORDER.forEach(id => list.appendChild(buildListItem(getModule(id), state)));
-  addDivider('Red team');
-  CURRICULUM.filter(m => m.track === 'red').forEach(m => list.appendChild(buildListItem(m, state)));
-  addDivider('Blue team');
-  CURRICULUM.filter(m => m.track === 'blue').forEach(m => list.appendChild(buildListItem(m, state)));
-
-  /* --- vine "growth": light up the trunk once the core is done --- */
-  const coreDone = CORE_ORDER.every(id => {
-    const p = moduleProgress(getModule(id), state);
-    return p.done === p.total;
+  BRANCHES.forEach(b => {
+    addDivider(b.name);
+    CURRICULUM.filter(m => m.track === b.id).forEach(m => list.appendChild(buildListItem(m, state)));
   });
-  document.getElementById('trunk').classList.toggle('grown', coreDone);
-  document.getElementById('branch-red').classList.toggle('live', state.team === 'red');
-  document.getElementById('branch-blue').classList.toggle('live', state.team === 'blue');
+  addDivider('Anytime');
+  CURRICULUM.filter(m => m.track === 'free').forEach(m => list.appendChild(buildListItem(m, state)));
 
-  /* --- progress ring --- */
+  /* The trunk lights up once the whole shared path is done; a branch lights
+     up when it is the one being walked. */
+  const unlocked = branchesUnlocked(state);
+  document.getElementById('trunk').classList.toggle('grown', unlocked);
+  BRANCHES.forEach(b => {
+    document.getElementById('branch-' + b.id).classList.toggle('live', state.team === b.id);
+  });
+
+  /* progress ring */
   const p = overallProgress(state);
   const circumference = 264;
   document.getElementById('ring-fill').style.strokeDashoffset =
@@ -109,19 +123,18 @@ function render() {
   document.getElementById('pct').textContent = p.pct + '%';
   document.getElementById('pct-sub').textContent = `${p.done} of ${p.total} lessons`;
 
-  /* --- specialization switch --- */
-  const unlocked = branchesUnlocked(state);
+  /* specialization switch */
   document.querySelectorAll('#team-switch button').forEach(btn => {
     btn.disabled = !unlocked;
     btn.classList.toggle('on', state.team === btn.dataset.team);
   });
   document.getElementById('team-note').textContent = unlocked
-    ? 'You can switch sides at any time — both branches stay open.'
-    : 'Unlocks after you finish Networking Fundamentals.';
+    ? 'Switch sides whenever you like — all three branches stay open.'
+    : `Unlocks after you finish ${lastCoreModule().title}.`;
 
   document.getElementById('vine-sub').textContent = unlocked
-    ? 'The fork is open. Pick a side — or walk both.'
-    : 'Start at the seed and grow upward. After networking, the vine splits.';
+    ? 'The fork is open. Pick a side — or walk all three.'
+    : 'Start at the seed and grow upward. After the shared trunk, the vine splits three ways.';
 }
 
 document.getElementById('team-switch').addEventListener('click', e => {
