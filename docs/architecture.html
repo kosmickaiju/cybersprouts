@@ -1,0 +1,922 @@
+<title>Cybersprouts Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* Tokens lifted from assets/css/styles.css so this doc reads as part of the
+     same project. Deliberately single-theme dark, like the product itself. */
+  :root {
+    --bg:         #0b0e0d;
+    --panel:      #101413;
+    --panel-2:    #141918;
+    --line:       #232b29;
+    --line-soft:  #1b2220;
+    --text:       #e9efec;
+    --dim:        #a3afa9;
+    --faint:      #6b7873;
+    --accent:     #57d68f;
+    --red:        #ff6b6b;
+    --yellow:     #f0c04a;
+    --blue:       #63a4ff;
+    --ai:         #b39bff;
+
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 56px 28px 96px;
+  }
+
+  /* ---------------------------------------------------------- masthead */
+  .masthead { border-bottom: 1px solid var(--line); padding-bottom: 30px; }
+
+  .kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+
+  h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    font-weight: 600;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+
+  .standfirst {
+    font-size: 16.5px;
+    color: var(--dim);
+    max-width: 66ch;
+    margin: 0;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin-top: 28px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .stat {
+    flex: 1 1 150px;
+    padding: 13px 16px;
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+  }
+  .stat:last-child { border-right: 0; }
+  .stat b {
+    display: block;
+    font-family: var(--mono);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat span {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  /* ---------------------------------------------------------- sections */
+  section { margin-top: 58px; }
+
+  .sec-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0 0 8px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin: 0 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 30px 0 10px;
+    color: var(--text);
+  }
+
+  p { max-width: 72ch; margin: 0 0 14px; color: var(--dim); }
+  p.tight { margin-bottom: 8px; }
+  strong { color: var(--text); font-weight: 600; }
+  em { color: var(--text); font-style: normal; font-weight: 500; }
+
+  code {
+    font-family: var(--mono);
+    font-size: .885em;
+    color: var(--accent);
+    background: rgba(87, 214, 143, .08);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  code.plain { color: var(--dim); background: var(--panel-2); }
+
+  pre {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    color: var(--dim);
+    margin: 0 0 16px;
+  }
+  pre .k { color: var(--accent); }
+  pre .c { color: var(--faint); }
+
+  /* ---------------------------------------------------------- file tree */
+  .tree {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .tree-row {
+    display: grid;
+    grid-template-columns: minmax(210px, 250px) 56px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--panel);
+  }
+  .tree-row:last-child { border-bottom: 0; }
+  .tree-row.dir { background: var(--panel-2); }
+  .tree-row .path {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .tree-row.dir .path { color: var(--faint); }
+  .tree-row .path .ind { color: var(--faint); }
+  .tree-row .loc {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .tree-row .role { font-size: 13.5px; color: var(--dim); }
+
+  /* ---------------------------------------------------------- tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 500;
+    padding: 11px 16px;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  td {
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--dim);
+    vertical-align: top;
+    background: var(--panel);
+  }
+  tr:last-child td { border-bottom: 0; }
+  td.m { font-family: var(--mono); font-size: 12px; color: var(--text); white-space: nowrap; }
+  td.n { font-family: var(--mono); font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .tk {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: 1px;
+  }
+  .tk.core   { background: var(--accent); }
+  .tk.red    { background: var(--red); }
+  .tk.yellow { background: var(--yellow); }
+  .tk.blue   { background: var(--blue); }
+  .tk.free   { background: var(--ai); }
+
+  /* ---------------------------------------------------------- figures */
+  figure {
+    margin: 26px 0 22px;
+    padding: 22px 20px 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  figure svg { display: block; width: 100%; max-width: 100%; height: auto; }
+  figcaption {
+    margin-top: 16px;
+    padding-top: 13px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 13px;
+    color: var(--faint);
+    max-width: 78ch;
+  }
+  figcaption b { color: var(--dim); font-weight: 500; }
+
+  /* svg type roles */
+  .s-box   { fill: #141918; stroke: #2f3a37; stroke-width: 1; }
+  .s-name  { font-family: var(--mono); font-size: 13px; font-weight: 600; fill: #57d68f; }
+  .s-role  { font-family: var(--font); font-size: 11.5px; fill: #a3afa9; }
+  .s-det   { font-family: var(--mono); font-size: 10px; fill: #6b7873; }
+  .s-edge  { stroke: #6b7873; stroke-width: 1.3; fill: none; }
+  .s-lab   { font-family: var(--mono); font-size: 9.5px; fill: #a3afa9; }
+  .s-head  { font-family: var(--mono); font-size: 10.5px; letter-spacing: .09em; fill: #6b7873; }
+
+  /* ---------------------------------------------------------- notes list */
+  .notes { list-style: none; padding: 0; margin: 0; counter-reset: n; }
+  .notes > li {
+    position: relative;
+    padding: 15px 0 15px 46px;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--dim);
+    font-size: 14.5px;
+    max-width: 80ch;
+  }
+  .notes > li:last-child { border-bottom: 0; }
+  .notes > li::before {
+    counter-increment: n;
+    content: counter(n, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 17px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .notes .hd { display: block; color: var(--text); font-weight: 600; margin-bottom: 2px; }
+
+  .callout {
+    border-left: 2px solid var(--accent);
+    background: rgba(87, 214, 143, .05);
+    padding: 12px 16px;
+    margin: 18px 0;
+    font-size: 13.5px;
+    color: var(--dim);
+    max-width: 76ch;
+  }
+
+  footer.doc {
+    margin-top: 64px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+
+  @media (max-width: 720px) {
+    h1 { font-size: 27px; }
+    .page { padding: 40px 18px 70px; }
+    .tree-row { grid-template-columns: 1fr; gap: 3px; }
+    .tree-row .loc { text-align: left; }
+  }
+</style>
+
+<div class="page">
+
+<header class="masthead">
+  <p class="kicker">cybersprouts · repository map</p>
+  <h1>What's doing what, and where</h1>
+  <p class="standfirst">
+    Cybersprouts is a static mockup: four HTML pages, one stylesheet, four scripts, no build step and
+    no server. Every behaviour in the product — gating, the placement test, the colour change when you
+    pick a team — comes from three files. This page maps them.
+  </p>
+
+  <div class="stats">
+    <div class="stat"><b>4</b><span>HTML pages</span></div>
+    <div class="stat"><b>4</b><span>JS files</span></div>
+    <div class="stat"><b>22</b><span>modules</span></div>
+    <div class="stat"><b>120</b><span>lessons</span></div>
+    <div class="stat"><b>10</b><span>written bodies</span></div>
+    <div class="stat"><b>0</b><span>dependencies</span></div>
+  </div>
+</header>
+
+<!-- ============================================================ overview -->
+<section>
+  <p class="sec-label">orientation</p>
+  <h2>The shape of it</h2>
+  <p>
+    There is no framework, no bundler and no package manager. Each page is plain HTML that loads
+    <code>data.js</code>, then <code>app.js</code>, then one page-specific script. Those files don't
+    import each other — they just declare top-level <code class="plain">const</code>s that land in the
+    same global scope, so <strong>the order of the <code class="plain">&lt;script&gt;</code> tags is the
+    dependency graph</strong>. Open any page with <code class="plain">open index.html</code> and it works.
+  </p>
+  <p>
+    The split that matters is <em>content</em> versus <em>rules</em> versus <em>view</em>.
+    <code>data.js</code> is 1,115 lines of pure content and holds no logic. <code>app.js</code> is the
+    only place that knows how progress is stored and which modules are unlocked. Each page script does
+    one job: turn that state into DOM for one screen.
+  </p>
+</section>
+
+<!-- ============================================================ file map -->
+<section>
+  <p class="sec-label">repository root</p>
+  <h2>File map</h2>
+
+  <div class="tree">
+    <div class="tree-row dir"><span class="path">cybersprouts/</span><span class="loc">lines</span><span class="role">role</span></div>
+
+    <div class="tree-row">
+      <span class="path"><span class="ind">├─ </span>index.html</span>
+      <span class="loc">124</span>
+      <span class="role">Landing page. The only page with an inline script — it renders the eight core module cards straight from <code class="plain">CORE_ORDER</code>.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">├─ </span>roadmap.html</span>
+      <span class="loc">148</span>
+      <span class="role">The vine. Hand-authored SVG (trunk, three branch stems, leaves, fork dot) plus empty <code class="plain">#nodes</code> and <code class="plain">#list</code> mount points.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">├─ </span>lesson.html</span>
+      <span class="loc">43</span>
+      <span class="role">Shell only: sidebar, article, footer buttons. Every element is filled in by <code class="plain">lesson.js</code>.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">├─ </span>placement.html</span>
+      <span class="loc">23</span>
+      <span class="role">Near-empty. One <code class="plain">#quiz-root</code> div; the whole test is drawn by JS.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">├─ </span>SPECS.md</span>
+      <span class="loc">19</span>
+      <span class="role">Product spec — purpose, audience, must/should/won't, open questions. Not read by any code.</span>
+    </div>
+
+    <div class="tree-row dir"><span class="path"><span class="ind">└─ </span>assets/</span><span class="loc"></span><span class="role"></span></div>
+
+    <div class="tree-row">
+      <span class="path"><span class="ind">   ├─ css/</span>styles.css</span>
+      <span class="loc">721</span>
+      <span class="role">Every style in the project. Opens with the design tokens, then three <code class="plain">[data-team]</code> blocks that swap them.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">   └─ js/</span>data.js</span>
+      <span class="loc">1115</span>
+      <span class="role"><strong>Content.</strong> <code class="plain">CURRICULUM</code>, <code class="plain">CORE_ORDER</code>, <code class="plain">BRANCHES</code>, <code class="plain">LESSON_BODIES</code>, <code class="plain">PLACEMENT_QUESTIONS</code>, <code class="plain">RECHECK_QUESTIONS</code>. No behaviour.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">      </span>app.js</span>
+      <span class="loc">152</span>
+      <span class="role"><strong>State and rules.</strong> The <code class="plain">Store</code>, all progress and unlock maths, theming, and the shared header/footer.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">      </span>roadmap.js</span>
+      <span class="loc">149</span>
+      <span class="role">Positions module cards over the vine SVG, drives the progress ring and the red/yellow/blue switch.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">      </span>lesson.js</span>
+      <span class="loc">129</span>
+      <span class="role">Renders one lesson: TOC, body (or the honest "not written yet" outline), complete/next buttons.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">      </span>placement.js</span>
+      <span class="loc">264</span>
+      <span class="role">The whole placement test: question flow, grading, the recheck, and writing the result into progress.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ load order -->
+<section>
+  <p class="sec-label">assets/js</p>
+  <h2>How the scripts fit together</h2>
+
+  <figure>
+    <svg viewBox="0 0 1000 300" role="img"
+         aria-label="data.js defines globals used by app.js, which reads and writes localStorage and is called by a page script, which writes the DOM.">
+      <defs>
+        <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="#6b7873"/>
+        </marker>
+      </defs>
+
+      <rect class="s-box" x="26"  y="40" width="200" height="96" rx="3"/>
+      <text class="s-name" x="126" y="68"  text-anchor="middle">data.js</text>
+      <text class="s-role" x="126" y="89"  text-anchor="middle">content only</text>
+      <text class="s-det"  x="126" y="109" text-anchor="middle">22 modules · 120 lessons</text>
+      <text class="s-det"  x="126" y="124" text-anchor="middle">24 quiz Qs · 10 bodies</text>
+
+      <rect class="s-box" x="292" y="40" width="200" height="96" rx="3"/>
+      <text class="s-name" x="392" y="68"  text-anchor="middle">app.js</text>
+      <text class="s-role" x="392" y="89"  text-anchor="middle">state and rules</text>
+      <text class="s-det"  x="392" y="109" text-anchor="middle">Store · moduleStatus()</text>
+      <text class="s-det"  x="392" y="124" text-anchor="middle">applyTheme() · chrome</text>
+
+      <rect class="s-box" x="558" y="40" width="200" height="96" rx="3"/>
+      <text class="s-name" x="658" y="68"  text-anchor="middle">page script</text>
+      <text class="s-role" x="658" y="89"  text-anchor="middle">renders one view</text>
+      <text class="s-det"  x="658" y="109" text-anchor="middle">roadmap · lesson</text>
+      <text class="s-det"  x="658" y="124" text-anchor="middle">placement · inline</text>
+
+      <rect class="s-box" x="824" y="40" width="150" height="96" rx="3"/>
+      <text class="s-name" x="899" y="80"  text-anchor="middle" fill="#a3afa9">DOM</text>
+      <text class="s-det"  x="899" y="100" text-anchor="middle">one page</text>
+
+      <line class="s-edge" x1="226" y1="88" x2="286" y2="88" marker-end="url(#a1)"/>
+      <text class="s-lab"  x="256" y="79" text-anchor="middle">defines</text>
+
+      <line class="s-edge" x1="492" y1="88" x2="552" y2="88" marker-end="url(#a1)"/>
+      <text class="s-lab"  x="522" y="79" text-anchor="middle">calls</text>
+
+      <line class="s-edge" x1="758" y1="88" x2="818" y2="88" marker-end="url(#a1)"/>
+      <text class="s-lab"  x="788" y="79" text-anchor="middle">innerHTML</text>
+
+      <rect class="s-box" x="292" y="212" width="200" height="60" rx="3" stroke="#2f3a37"/>
+      <text class="s-role" x="392" y="238" text-anchor="middle" fill="#a3afa9">localStorage</text>
+      <text class="s-det"  x="392" y="256" text-anchor="middle">'cybersprouts.v1'</text>
+
+      <line class="s-edge" x1="392" y1="136" x2="392" y2="212"
+            marker-start="url(#a1)" marker-end="url(#a1)"/>
+      <text class="s-lab"  x="406" y="178">read / write</text>
+
+      <text class="s-head" x="26" y="24">LOAD ORDER — LEFT TO RIGHT, EVERY PAGE</text>
+    </svg>
+    <figcaption>
+      <b>Everything is global.</b> There are no imports: <code class="plain">app.js</code> can call
+      <code class="plain">CURRICULUM</code> only because <code class="plain">data.js</code> ran first, and the
+      page script can call <code class="plain">Store</code> only because <code class="plain">app.js</code> ran
+      before it. Reordering the script tags in any HTML file breaks the page.
+    </figcaption>
+  </figure>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Page</th><th>Page script</th><th>What it renders</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="m">index.html</td>
+          <td class="m">inline &lt;script&gt;</td>
+          <td>Core module cards + the three anytime cards. Six lines of JS; no state read beyond the header.</td>
+        </tr>
+        <tr>
+          <td class="m">roadmap.html</td>
+          <td class="m">roadmap.js</td>
+          <td>Module nodes over the vine, the narrow-screen list fallback, progress ring, team switch.</td>
+        </tr>
+        <tr>
+          <td class="m">lesson.html</td>
+          <td class="m">lesson.js</td>
+          <td>One lesson, chosen by <code class="plain">?module=&amp;lesson=</code>; TOC, body, complete/next.</td>
+        </tr>
+        <tr>
+          <td class="m">placement.html</td>
+          <td class="m">placement.js</td>
+          <td>Intro → 24 questions → results → optional recheck. All four screens into one div.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ state -->
+<section>
+  <p class="sec-label">app.js · Store</p>
+  <h2>All of the state</h2>
+  <p>
+    One localStorage key holds everything the app remembers. There is no account, no sync and no
+    server — progress lives in whichever browser made it, and the footer's <em>Reset progress</em>
+    link deletes the key outright.
+  </p>
+
+<pre><span class="c">// localStorage['cybersprouts.v1']</span>
+{
+  <span class="k">completed</span>: [ <span class="c">"basics/cia-triad", "python/setup", ...</span> ],  <span class="c">// "moduleId/lessonId"</span>
+  <span class="k">team</span>:      <span class="c">'red' | 'yellow' | 'blue' | null</span>,
+  <span class="k">placement</span>: {                                     <span class="c">// null until the test is applied</span>
+    correct: 21, of: 24,
+    cleared: [ <span class="c">"basics", "python", "terminal"</span> ],
+    rechecked: [ <span class="c">"terminal"</span> ],
+    takenAt: <span class="c">"2026-09-10T…"</span>
+  }
+}</pre>
+
+  <p>
+    <code>completed</code> is the single source of truth. Everything else — a module's status, the
+    percentage in the header, whether the fork is open — is <em>derived</em> from it on each render by
+    the four helpers in <code>app.js</code>: <code>moduleProgress()</code>, <code>moduleStatus()</code>,
+    <code>branchesUnlocked()</code> and <code>overallProgress()</code>. Nothing is cached.
+  </p>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Written by</th><th>Field</th><th>When</th></tr></thead>
+      <tbody>
+        <tr><td class="m">lesson.js</td><td class="m">completed</td><td>Clicking "Mark as complete" pushes or splices one key, then auto-advances to the next lesson.</td></tr>
+        <tr><td class="m">placement.js</td><td class="m">completed, placement</td><td>Applying results pushes <em>every</em> lesson key of each cleared module at once.</td></tr>
+        <tr><td class="m">roadmap.js</td><td class="m">team</td><td>The red/yellow/blue switch. Clicking the active one sets it back to <code class="plain">null</code>.</td></tr>
+        <tr><td class="m">app.js</td><td class="m">— (clears all)</td><td>The footer's Reset progress link removes the key and reloads.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ gating -->
+<section>
+  <p class="sec-label">app.js · moduleStatus()</p>
+  <h2>What unlocks what</h2>
+
+  <figure>
+    <svg viewBox="0 0 960 384" role="img"
+         aria-label="Eight core modules unlock in a chain; completing all eight opens the red, yellow and blue branches simultaneously. The three anytime modules have no incoming prerequisite edges.">
+      <defs>
+        <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="#6b7873"/>
+        </marker>
+      </defs>
+
+      <text class="s-head" x="480" y="16" text-anchor="middle" fill="#b39bff">ANYTIME — NO PREREQUISITE EDGES</text>
+      <rect x="207" y="26" width="170" height="42" rx="3" fill="#141918" stroke="#4a4066" stroke-dasharray="4 3"/>
+      <rect x="395" y="26" width="170" height="42" rx="3" fill="#141918" stroke="#4a4066" stroke-dasharray="4 3"/>
+      <rect x="583" y="26" width="170" height="42" rx="3" fill="#141918" stroke="#4a4066" stroke-dasharray="4 3"/>
+      <text class="s-role" x="292" y="52" text-anchor="middle" fill="#b39bff">AI Security</text>
+      <text class="s-role" x="480" y="52" text-anchor="middle" fill="#b39bff">Cloud Fundamentals</text>
+      <text class="s-role" x="668" y="52" text-anchor="middle" fill="#b39bff">Breaking In</text>
+
+      <text class="s-head" x="8" y="154" fill="#57d68f">SHARED TRUNK — EACH OPENS ONLY WHEN EVERY EARLIER ONE IS 100%</text>
+
+      <rect x="8"   y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+      <rect x="128" y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+      <rect x="248" y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+      <rect x="368" y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+      <rect x="488" y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+      <rect x="608" y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+      <rect x="728" y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+      <rect x="848" y="170" width="104" height="44" rx="3" fill="#141918" stroke="#2f6b4c"/>
+
+      <text class="s-det" x="60"  y="190" text-anchor="middle" fill="#a3afa9">basics</text>
+      <text class="s-det" x="180" y="190" text-anchor="middle" fill="#a3afa9">python</text>
+      <text class="s-det" x="300" y="190" text-anchor="middle" fill="#a3afa9">terminal</text>
+      <text class="s-det" x="420" y="190" text-anchor="middle" fill="#a3afa9">os</text>
+      <text class="s-det" x="540" y="190" text-anchor="middle" fill="#a3afa9">networking</text>
+      <text class="s-det" x="660" y="190" text-anchor="middle" fill="#a3afa9">crypto</text>
+      <text class="s-det" x="780" y="190" text-anchor="middle" fill="#a3afa9">web</text>
+      <text class="s-det" x="900" y="190" text-anchor="middle" fill="#a3afa9">attack</text>
+
+      <text class="s-det" x="60"  y="206" text-anchor="middle">7</text>
+      <text class="s-det" x="180" y="206" text-anchor="middle">7</text>
+      <text class="s-det" x="300" y="206" text-anchor="middle">7</text>
+      <text class="s-det" x="420" y="206" text-anchor="middle">6</text>
+      <text class="s-det" x="540" y="206" text-anchor="middle">7</text>
+      <text class="s-det" x="660" y="206" text-anchor="middle">6</text>
+      <text class="s-det" x="780" y="206" text-anchor="middle">5</text>
+      <text class="s-det" x="900" y="206" text-anchor="middle">4</text>
+
+      <line class="s-edge" x1="112" y1="192" x2="126" y2="192" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="232" y1="192" x2="246" y2="192" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="352" y1="192" x2="366" y2="192" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="472" y1="192" x2="486" y2="192" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="592" y1="192" x2="606" y2="192" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="712" y1="192" x2="726" y2="192" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="832" y1="192" x2="846" y2="192" marker-end="url(#a2)"/>
+
+      <path class="s-edge" d="M900 214 L900 254 L175 254"/>
+      <text class="s-lab" x="893" y="245" text-anchor="end">all 8 complete</text>
+
+      <line class="s-edge" x1="175" y1="254" x2="175" y2="298" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="480" y1="254" x2="480" y2="298" marker-end="url(#a2)"/>
+      <line class="s-edge" x1="785" y1="254" x2="785" y2="298" marker-end="url(#a2)"/>
+
+      <rect x="30"  y="302" width="290" height="60" rx="3" fill="#141918" stroke="#7a2f2f"/>
+      <rect x="335" y="302" width="290" height="60" rx="3" fill="#141918" stroke="#7a6224"/>
+      <rect x="640" y="302" width="290" height="60" rx="3" fill="#141918" stroke="#2b4b7a"/>
+
+      <text class="s-role" x="175" y="326" text-anchor="middle" fill="#ff6b6b">Red team</text>
+      <text class="s-role" x="480" y="326" text-anchor="middle" fill="#f0c04a">Yellow team</text>
+      <text class="s-role" x="785" y="326" text-anchor="middle" fill="#63a4ff">Blue team</text>
+
+      <text class="s-det" x="175" y="346" text-anchor="middle">3 modules · 15 lessons</text>
+      <text class="s-det" x="480" y="346" text-anchor="middle">3 modules · 15 lessons</text>
+      <text class="s-det" x="785" y="346" text-anchor="middle">5 modules · 25 lessons</text>
+    </svg>
+    <figcaption>
+      <b>All three branches open at once.</b> Choosing a team is a display choice, not a gate — it decides
+      which branch gets the "up next" marker and what colour the interface is. The other two stay open,
+      which is what makes "walk all three" possible.
+    </figcaption>
+  </figure>
+
+  <p>
+    <code>moduleStatus()</code> returns one of four strings, and every card on the roadmap is styled
+    from it:
+  </p>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Status</th><th>Meaning</th><th>Card behaviour</th></tr></thead>
+      <tbody>
+        <tr><td class="m">done</td><td>Every lesson in the module is in <code class="plain">completed</code>.</td><td>Green tick styling, still clickable.</td></tr>
+        <tr><td class="m">current</td><td>The next thing to do: the first core module with unfinished prerequisites cleared, or the chosen branch's first unfinished module.</td><td>"Up next" label, accent ring.</td></tr>
+        <tr><td class="m">open</td><td>Reachable but not the highlighted next step — the two branches you didn't pick, and any untouched anytime module.</td><td>Normal card, quiet.</td></tr>
+        <tr><td class="m">locked</td><td>Prerequisites unmet.</td><td>Rendered as a <code class="plain">&lt;div&gt;</code>, not an <code class="plain">&lt;a&gt;</code> — there is no link to follow.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The percentage moves when you pick a team</h3>
+  <p class="tight">
+    <code>overallProgress()</code> counts the core spine, the three anytime modules, and — only once
+    chosen — your specialization. So the denominator in the header pill changes:
+  </p>
+  <div class="callout">
+    No team selected: <strong>65 lessons</strong> (49 core + 16 anytime). Red or yellow:
+    <strong>80</strong>. Blue: <strong>90</strong>. Picking a team therefore makes your percentage
+    <em>drop</em>, because the numerator doesn't change. Worth deciding whether that's the behaviour you want.
+  </div>
+</section>
+
+<!-- ============================================================ placement -->
+<section>
+  <p class="sec-label">placement.js</p>
+  <h2>How the placement test writes progress</h2>
+
+  <figure>
+    <svg viewBox="0 0 960 222" role="img"
+         aria-label="Twenty-four questions are graded per module; a prefix of modules clears; a near miss loops back through a recheck; the cleared modules are expanded into lesson keys and written to completed.">
+      <defs>
+        <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="#6b7873"/>
+        </marker>
+      </defs>
+
+      <rect class="s-box" x="10"  y="20" width="210" height="84" rx="3"/>
+      <rect class="s-box" x="256" y="20" width="210" height="84" rx="3"/>
+      <rect class="s-box" x="502" y="20" width="210" height="84" rx="3"/>
+      <rect class="s-box" x="748" y="20" width="210" height="84" rx="3"/>
+
+      <text class="s-role" x="115" y="46" text-anchor="middle" fill="#e9efec">24 questions</text>
+      <text class="s-det"  x="115" y="66" text-anchor="middle">3 per core module</text>
+      <text class="s-det"  x="115" y="83" text-anchor="middle">~12 min, optional</text>
+
+      <text class="s-role" x="361" y="46" text-anchor="middle" fill="#e9efec">grade by module</text>
+      <text class="s-det"  x="361" y="66" text-anchor="middle">3 / 3 or nothing</text>
+      <text class="s-det"  x="361" y="83" text-anchor="middle">no partial credit</text>
+
+      <text class="s-role" x="607" y="46" text-anchor="middle" fill="#e9efec">clear a prefix</text>
+      <text class="s-det"  x="607" y="66" text-anchor="middle">stop at the first miss</text>
+      <text class="s-det"  x="607" y="83" text-anchor="middle">that module = blocker</text>
+
+      <text class="s-role" x="853" y="46" text-anchor="middle" fill="#e9efec">apply</text>
+      <text class="s-det"  x="853" y="66" text-anchor="middle">expand each module into</text>
+      <text class="s-det"  x="853" y="83" text-anchor="middle">lesson keys → completed[]</text>
+
+      <line class="s-edge" x1="220" y1="62" x2="250" y2="62" marker-end="url(#a3)"/>
+      <line class="s-edge" x1="466" y1="62" x2="496" y2="62" marker-end="url(#a3)"/>
+      <line class="s-edge" x1="712" y1="62" x2="742" y2="62" marker-end="url(#a3)"/>
+
+      <path class="s-edge" d="M607 104 L607 148 L361 148 L361 108" marker-end="url(#a3)"
+            stroke="#57d68f" stroke-dasharray="5 4"/>
+      <text class="s-lab" x="484" y="141" text-anchor="middle" fill="#57d68f">recheck</text>
+
+      <text class="s-lab" x="484" y="175" text-anchor="middle">missed exactly one in the blocker → 3 fresh questions on that module</text>
+      <text class="s-lab" x="484" y="192" text-anchor="middle">a clean pass re-scores it 3/3, so the prefix extends past it</text>
+      <text class="s-lab" x="484" y="209" text-anchor="middle" fill="#6b7873">offered once per module — a failed recheck is not repeated</text>
+    </svg>
+    <figcaption>
+      <b>Modules clear as a prefix, never as a set.</b> Ace networking but miss one in python and networking
+      still doesn't clear — you can't skip a hole in the middle of the trunk. The recheck exists so a single
+      careless answer doesn't cost every module above it; the results screen marks those stranded modules
+      "Pending recheck".
+    </figcaption>
+  </figure>
+
+  <p>
+    The fork is never skippable: <code>PLACEMENT_QUESTIONS</code> covers the eight core modules only, so the
+    best possible result is landing at the fork with a specialization to choose.
+    <code>RECHECK_QUESTIONS</code> is a second, separate bank — three fresh questions per core module,
+    never shown in the main run.
+  </p>
+</section>
+
+<!-- ============================================================ theming -->
+<section>
+  <p class="sec-label">app.js · applyTheme() + styles.css</p>
+  <h2>The colour change</h2>
+  <p>
+    One function and one attribute. <code>applyTheme(team)</code> sets
+    <code class="plain">data-team</code> on <code class="plain">&lt;html&gt;</code>; the stylesheet has three
+    blocks that redefine the accent and neutral tokens, and every component reads those tokens rather than
+    literal colours. That's why the whole interface changes with one attribute write.
+  </p>
+
+<pre><span class="c">/* styles.css — the base tokens… */</span>
+:root { <span class="k">--accent</span>: #57d68f; <span class="k">--bg</span>: #0b0e0d; <span class="k">--surface</span>: #141918; … }
+
+<span class="c">/* …and the three swaps. Note the neutrals shift too, not just the accent. */</span>
+[data-team='red']    { <span class="k">--accent</span>: #ff6b6b; <span class="k">--bg</span>: #0d0a0a; … }
+[data-team='yellow'] { <span class="k">--accent</span>: #f0c04a; <span class="k">--bg</span>: #0d0b06; … }
+[data-team='blue']   { <span class="k">--accent</span>: #63a4ff; <span class="k">--bg</span>: #090b10; … }</pre>
+
+  <p>
+    <code>lesson.js</code> adds one wrinkle worth knowing: opening any branch lesson themes the page for
+    <em>that</em> branch, whatever your saved team is, and without overwriting it. So a blue-team learner
+    who peeks at a red-team lesson sees red for that page and blue again everywhere else.
+    <code class="plain">--red</code>, <code class="plain">--yellow</code>, <code class="plain">--blue</code>
+    and <code class="plain">--ai</code> stay fixed at all times, so branch labels keep their own identity
+    inside any theme.
+  </p>
+</section>
+
+<!-- ============================================================ vine -->
+<section>
+  <p class="sec-label">roadmap.js + roadmap.html</p>
+  <h2>How cards land on the vine</h2>
+  <p>
+    The vine is a hand-drawn SVG in a <code class="plain">1200 × 2860</code> coordinate space, growing
+    bottom-up from the seed at <code class="plain">(600, 2800)</code> to the fork at
+    <code class="plain">(600, 1100)</code>, where three stems fan out to
+    <code class="plain">x = 210 / 600 / 990</code>. The module cards are <em>not</em> in the SVG — they're
+    absolutely-positioned HTML in an overlay div. <code>roadmap.js</code> converts each module's
+    <code class="plain">pos</code> into a percentage of that same canvas, so the two layers stay aligned at
+    any width.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 900 268" role="img"
+         aria-label="Three card placements: side left puts the card 34 pixels left of a dot on the trunk, side right 34 pixels to its right, side center puts the card's left edge on the branch stem with no dot.">
+      <text class="s-head" x="10" y="16" fill="#57d68f">side: 'left'</text>
+      <line x1="200" y1="34" x2="200" y2="196" stroke="#2f6b4c" stroke-width="3"/>
+      <rect x="60" y="94" width="106" height="48" rx="3" fill="#141918" stroke="#2f3a37"/>
+      <circle cx="200" cy="118" r="6" fill="#57d68f"/>
+      <line x1="166" y1="170" x2="200" y2="170" stroke="#6b7873" stroke-width="1"/>
+      <line x1="166" y1="165" x2="166" y2="175" stroke="#6b7873" stroke-width="1"/>
+      <line x1="200" y1="165" x2="200" y2="175" stroke="#6b7873" stroke-width="1"/>
+      <text class="s-lab" x="183" y="162" text-anchor="middle">34px</text>
+      <text class="s-det" x="10" y="222">dot on the trunk, card to its left</text>
+      <text class="s-det" x="10" y="240" fill="#a3afa9">basics · terminal · networking · web</text>
+
+      <text class="s-head" x="310" y="16" fill="#57d68f">side: 'right'</text>
+      <line x1="380" y1="34" x2="380" y2="196" stroke="#2f6b4c" stroke-width="3"/>
+      <rect x="414" y="94" width="106" height="48" rx="3" fill="#141918" stroke="#2f3a37"/>
+      <circle cx="380" cy="118" r="6" fill="#57d68f"/>
+      <line x1="380" y1="170" x2="414" y2="170" stroke="#6b7873" stroke-width="1"/>
+      <line x1="380" y1="165" x2="380" y2="175" stroke="#6b7873" stroke-width="1"/>
+      <line x1="414" y1="165" x2="414" y2="175" stroke="#6b7873" stroke-width="1"/>
+      <text class="s-lab" x="397" y="162" text-anchor="middle">34px</text>
+      <text class="s-det" x="310" y="222">dot on the trunk, card to its right</text>
+      <text class="s-det" x="310" y="240" fill="#a3afa9">python · os · crypto · attack</text>
+
+      <text class="s-head" x="610" y="16" fill="#57d68f">side: 'center'</text>
+      <line x1="680" y1="34" x2="680" y2="196" stroke="#2b4b7a" stroke-width="3"/>
+      <rect x="680" y="94" width="150" height="48" rx="3" fill="#141918" stroke="#2f3a37"/>
+      <text class="s-lab" x="686" y="170">no dot — the card would hide it</text>
+      <text class="s-det" x="610" y="222">left edge sits on the branch stem</text>
+      <text class="s-det" x="610" y="240" fill="#a3afa9">all 11 branch modules</text>
+    </svg>
+    <figcaption>
+      <b>Positions are hand-maintained.</b> Each module's <code class="plain">pos</code> has to match the
+      hand-drawn path data in <code class="plain">roadmap.html</code> — nothing checks that they agree. Add a
+      fourth red module and its card will float beside a stem that has no room for it.
+    </figcaption>
+  </figure>
+
+  <p>
+    That maintenance cost is already visible in the branch spacing: red and yellow carry three modules over
+    the same stem height at 420 units apart, while blue packs five in at 210 apart. The stems are the same
+    length; only the density differs.
+  </p>
+
+  <h3>Every module and where it sits</h3>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Track</th><th>id</th><th>Title</th><th>Lessons</th><th>pos (x, y, side)</th></tr></thead>
+      <tbody>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">basics</td><td>Security Foundations</td><td class="n">7</td><td class="n">530, 2660, left</td></tr>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">python</td><td>Python for Security</td><td class="n">7</td><td class="n">670, 2460, right</td></tr>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">terminal</td><td>The Terminal</td><td class="n">7</td><td class="n">530, 2260, left</td></tr>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">os</td><td>Operating Systems</td><td class="n">6</td><td class="n">670, 2060, right</td></tr>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">networking</td><td>Networking Fundamentals</td><td class="n">7</td><td class="n">530, 1860, left</td></tr>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">crypto</td><td>Cryptography Essentials</td><td class="n">6</td><td class="n">670, 1660, right</td></tr>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">web</td><td>Web &amp; HTTP Fundamentals</td><td class="n">5</td><td class="n">530, 1460, left</td></tr>
+        <tr><td class="m"><i class="tk core"></i>core</td><td class="m">attack</td><td>Attacker Methodology</td><td class="n">4</td><td class="n">600, 1260, right</td></tr>
+
+        <tr><td class="m"><i class="tk red"></i>red</td><td class="m">red-recon</td><td>Recon &amp; Enumeration</td><td class="n">5</td><td class="n">210, 970, center</td></tr>
+        <tr><td class="m"><i class="tk red"></i>red</td><td class="m">red-exploit</td><td>Exploitation &amp; Pentesting</td><td class="n">5</td><td class="n">210, 550, center</td></tr>
+        <tr><td class="m"><i class="tk red"></i>red</td><td class="m">red-ctf</td><td>CTF Prep</td><td class="n">5</td><td class="n">210, 130, center</td></tr>
+
+        <tr><td class="m"><i class="tk yellow"></i>yellow</td><td class="m">appsec-design</td><td>Secure Design &amp; Threat Modeling</td><td class="n">5</td><td class="n">600, 970, center</td></tr>
+        <tr><td class="m"><i class="tk yellow"></i>yellow</td><td class="m">appsec-review</td><td>Secure Code Review &amp; Testing</td><td class="n">5</td><td class="n">600, 550, center</td></tr>
+        <tr><td class="m"><i class="tk yellow"></i>yellow</td><td class="m">appsec-supply</td><td>Supply Chain &amp; CI/CD Security</td><td class="n">5</td><td class="n">600, 130, center</td></tr>
+
+        <tr><td class="m"><i class="tk blue"></i>blue</td><td class="m">blue-soc</td><td>SOC Operations</td><td class="n">5</td><td class="n">990, 970, center</td></tr>
+        <tr><td class="m"><i class="tk blue"></i>blue</td><td class="m">blue-dfir</td><td>Digital Forensics &amp; IR</td><td class="n">5</td><td class="n">990, 760, center</td></tr>
+        <tr><td class="m"><i class="tk blue"></i>blue</td><td class="m">blue-malware</td><td>Malware Analysis</td><td class="n">5</td><td class="n">990, 550, center</td></tr>
+        <tr><td class="m"><i class="tk blue"></i>blue</td><td class="m">blue-iam</td><td>Identity &amp; Access Management</td><td class="n">5</td><td class="n">990, 340, center</td></tr>
+        <tr><td class="m"><i class="tk blue"></i>blue</td><td class="m">blue-grc</td><td>Governance, Risk &amp; Compliance</td><td class="n">5</td><td class="n">990, 130, center</td></tr>
+
+        <tr><td class="m"><i class="tk free"></i>free</td><td class="m">ai</td><td>AI Security</td><td class="n">5</td><td class="n">— not on the vine</td></tr>
+        <tr><td class="m"><i class="tk free"></i>free</td><td class="m">cloud</td><td>Cloud Fundamentals</td><td class="n">5</td><td class="n">— not on the vine</td></tr>
+        <tr><td class="m"><i class="tk free"></i>free</td><td class="m">career</td><td>Breaking In</td><td class="n">6</td><td class="n">— not on the vine</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ notes -->
+<section>
+  <p class="sec-label">worth knowing</p>
+  <h2>Sharp edges</h2>
+  <p>
+    Things that are true of the code today and easy to trip over later. None of these are bugs right now —
+    they're the places where the mockup's shortcuts will bite as it grows.
+  </p>
+
+  <ol class="notes">
+    <li>
+      <span class="hd">One global namespace, no guardrails</span>
+      Every top-level <code class="plain">const</code> across all four scripts shares one scope.
+      <code>roadmap.js</code>, <code>lesson.js</code> and <code>placement.js</code> each define their own
+      <code class="plain">render()</code> — harmless only because no page loads two of them. A duplicate
+      name across <code>data.js</code> and <code>app.js</code> would throw on load.
+    </li>
+    <li>
+      <span class="hd"><code class="plain">data.js</code> defines itself, then extends itself</span>
+      <code class="plain">LESSON_BODIES</code> and <code class="plain">RECHECK_QUESTIONS</code> get a second
+      helping via <code class="plain">Object.assign</code> (lines 541 and 1028), and
+      <code class="plain">PLACEMENT_QUESTIONS</code> via <code class="plain">.push()</code> (line 931).
+      Reading only the first declaration shows you half the data.
+    </li>
+    <li>
+      <span class="hd">A written lesson is recorded in three places</span>
+      The body goes in <code class="plain">LESSON_BODIES</code>, the lesson gets
+      <code class="plain">showcase: true</code> in <code class="plain">CURRICULUM</code>, and its title is
+      hard-coded into the "look for these" prose inside <code>lesson.js</code>'s
+      <code class="plain">draftBody()</code>. All three are in sync at 10 lessons — by hand.
+      Nothing reads <code class="plain">showcase</code>; it's documentation.
+    </li>
+    <li>
+      <span class="hd">Anytime modules aren't on the vine at all</span>
+      <code>roadmap.js</code> filters on <code class="plain">m.pos</code>, and the three
+      <code class="plain">free</code> modules don't have one. They're reachable from the header nav, the
+      roadmap sidebar panel, and the narrow-screen list — but a learner scanning the vine won't see them.
+    </li>
+    <li>
+      <span class="hd">Progress is per-browser and unversioned</span>
+      <code class="plain">Store.read()</code> merges the stored object over
+      <code class="plain">blank()</code>, so new fields get defaults — but there's no migration path if the
+      shape of <code class="plain">completed</code> ever changes. The key name carries the only version
+      marker: <code class="plain">.v1</code>.
+    </li>
+    <li>
+      <span class="hd">The header renders before the page script runs</span>
+      <code class="plain">initChrome()</code> paints the lesson count at load; anything that changes
+      progress mid-page has to call <code class="plain">renderHeader()</code> again.
+      <code>roadmap.js</code> does this after a team switch — a new page that mutates state will need to
+      remember it too.
+    </li>
+  </ol>
+</section>
+
+<footer class="doc">
+  Cybersprouts · docs/architecture.html · reflects the tree at commit 9265c15 · 2,887 lines across 11 files
+</footer>
+
+</div>
