@@ -1,6 +1,9 @@
 /* Cybersprouts — shared state, theming, and small helpers.
-   Progress lives in localStorage so the mockup feels continuous
-   across pages without a backend. */
+   localStorage is always the working copy: reads are instant and nothing here
+   waits on a network. When the learner is signed in, sync.js mirrors this same
+   document to Postgres so it follows them to another browser or device. With
+   no account — or no connection — everything below behaves exactly as it did
+   when this was local-only. */
 
 const STORAGE_KEY = 'cybersprouts.v1';
 
@@ -14,22 +17,36 @@ const Store = {
   },
 
   blank() {
-    return { completed: [], team: null, placement: null };
+    /* The two timestamps exist only for merging: they let sync.js decide which
+       side of a conflict is newer without guessing. */
+    return { completed: [], team: null, teamUpdatedAt: null, placement: null, updatedAt: null };
   },
 
-  write(state) {
+  /* `sync: false` is for writes that came *from* the server — stamping and
+     re-pushing those would bounce the same state back and forth forever. */
+  write(state, { sync = true } = {}) {
+    if (sync) state.updatedAt = new Date().toISOString();
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+    if (sync && typeof Sync !== 'undefined') Sync.schedulePush();
     return state;
   },
 
   update(fn) {
     const state = Store.read();
+    const teamBefore = state.team;
     fn(state);
+    /* Stamp the specialization whenever it actually changes, so a switch made
+       on a phone can win over a stale choice sitting on a laptop. */
+    if (state.team !== teamBefore) state.teamUpdatedAt = new Date().toISOString();
     return Store.write(state);
   },
 
-  reset() {
+  /* Clearing the local copy leaves the account's saved progress alone unless
+     `remote` is set — "reset this browser" and "reset my account" are very
+     different promises to make to someone. */
+  reset({ remote = false } = {}) {
     try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
+    if (remote && typeof Sync !== 'undefined' && Sync.active()) return Sync.resetRemote();
   }
 };
 
@@ -109,7 +126,30 @@ const SPROUT_SVG = `
     <path d="M12 12.4c0-3 2.2-4.9 5.6-4.9 0 3-2.2 4.9-5.6 4.9Z" fill="currentColor" fill-opacity=".22"/>
   </svg>`;
 
+/* The account chip, in its four states. It is rendered even when Supabase is
+   unconfigured — clicking through then explains what is missing, which beats
+   a nav item that silently does nothing. */
+function accountChip(active) {
+  if (!Auth.ready()) return `<span class="acct-chip loading" aria-hidden="true"></span>`;
+
+  if (!Auth.signedIn()) {
+    return `<a class="acct-chip signin ${active === 'account' ? 'active' : ''}" href="account.html">Sign in</a>`;
+  }
+
+  const email = Auth.user().email || '';
+  return `
+    <a class="acct-chip user ${active === 'account' ? 'active' : ''}" href="account.html"
+       title="${email}">
+      <i class="avatar">${(email[0] || '?').toUpperCase()}</i>
+      <span>${email.split('@')[0]}</span>
+      <i class="sync-dot ${Sync.status}" aria-hidden="true"></i>
+    </a>`;
+}
+
+let activeNav = null;
+
 function renderHeader(active) {
+  if (active !== undefined) activeNav = active;
   const state = Store.read();
   const p = overallProgress(state);
   const el = document.getElementById('header');
@@ -119,14 +159,34 @@ function renderHeader(active) {
     <div class="wrap">
       <a class="brand" href="index.html">${SPROUT_SVG}<span>Cyber<em>sprouts</em></span></a>
       <nav class="nav">
-        <a href="roadmap.html" class="${active === 'roadmap' ? 'active' : ''}">Roadmap</a>
-        <a href="placement.html" class="${active === 'placement' ? 'active' : ''}">Placement test</a>
+        <a href="roadmap.html" class="${activeNav === 'roadmap' ? 'active' : ''}">Roadmap</a>
+        <a href="placement.html" class="${activeNav === 'placement' ? 'active' : ''}">Placement test</a>
         <a href="lesson.html?module=ai" class="ai-link">AI Security</a>
         <a href="lesson.html?module=cloud" class="ai-link">Cloud</a>
         <a href="lesson.html?module=career" class="ai-link">Breaking In</a>
       </nav>
       <span class="pill"><i class="dot"></i>${p.done}/${p.total} lessons</span>
+      ${accountChip(activeNav)}
     </div>`;
+}
+
+/* Where the learner's progress actually lives, said plainly. Someone who
+   thinks their work is safe on a server when it is only in this browser will
+   find out the hard way. */
+function storageNote() {
+  if (!Auth.signedIn()) {
+    return Auth.available()
+      ? 'Progress is stored in this browser — <a href="account.html">make an account</a> to keep it anywhere.'
+      : 'Progress is stored locally in this browser.';
+  }
+  const notes = {
+    synced:  'Progress saved to your account.',
+    syncing: 'Saving…',
+    offline: 'Offline — saved in this browser, and to your account when you reconnect.',
+    error:   'Could not reach your account. Progress is safe in this browser.',
+    local:   'Progress is stored locally in this browser.'
+  };
+  return notes[Sync.status] || notes.local;
 }
 
 function renderFooter() {
@@ -135,13 +195,18 @@ function renderFooter() {
   el.className = 'site-footer';
   el.innerHTML = `
     <div class="wrap">
-      <span>Cybersprouts — early mockup. Progress is stored locally in this browser.</span>
+      <span>Cybersprouts — early mockup. ${storageNote()}</span>
       <a href="#" id="reset-progress">Reset progress</a>
     </div>`;
+
   el.querySelector('#reset-progress').addEventListener('click', e => {
     e.preventDefault();
-    Store.reset();
-    location.reload();
+    const signedIn = Auth.signedIn();
+    const warning = signedIn
+      ? 'Erase all of your progress? This clears it on your account too, on every device. This cannot be undone.'
+      : 'Erase all progress stored in this browser? This cannot be undone.';
+    if (!confirm(warning)) return;
+    Promise.resolve(Store.reset({ remote: signedIn })).then(() => location.reload());
   });
 }
 
@@ -149,4 +214,18 @@ function initChrome(active) {
   applyTheme(Store.read().team);
   renderHeader(active);
   renderFooter();
+
+  /* Auth resolves asynchronously, and sync lands whenever the network does.
+     Both just re-render the chrome in place rather than blocking first paint. */
+  Auth.onChange(() => { renderHeader(); renderFooter(); });
+  document.addEventListener('cybersprouts:sync', () => { renderHeader(); renderFooter(); });
+
+  /* A pull can change progress underneath whatever page is open. Pages that
+     draw progress re-render themselves on this event. */
+  document.addEventListener('cybersprouts:progress', () => {
+    applyTheme(Store.read().team);
+    renderHeader();
+  });
+
+  Auth.init();
 }

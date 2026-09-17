@@ -145,5 +145,8 @@ document.getElementById('team-switch').addEventListener('click', e => {
   renderHeader('roadmap');
 });
 
+/* A sync can land after the page has drawn — redraw the vine when it does. */
+document.addEventListener('cybersprouts:progress', render);
+
 initChrome('roadmap');
 render();

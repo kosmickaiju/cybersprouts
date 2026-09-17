@@ -125,5 +125,8 @@ document.getElementById('complete-btn').addEventListener('click', () => {
   render();
 });
 
+/* Progress pulled from the account mid-read updates the ticks in place. */
+document.addEventListener('cybersprouts:progress', render);
+
 initChrome();
 render();

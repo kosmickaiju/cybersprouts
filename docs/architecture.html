@@ -320,18 +320,19 @@
   <p class="kicker">cybersprouts · repository map</p>
   <h1>What's doing what, and where</h1>
   <p class="standfirst">
-    Cybersprouts is a static mockup: four HTML pages, one stylesheet, four scripts, no build step and
-    no server. Every behaviour in the product — gating, the placement test, the colour change when you
-    pick a team — comes from three files. This page maps them.
+    Cybersprouts is a static mockup: five HTML pages, one stylesheet, eight scripts and no build step.
+    Every behaviour in the product — gating, the placement test, the colour change when you pick a team —
+    comes from three files. A fourth concern, accounts, sits alongside them and can be switched off
+    entirely. This page maps them.
   </p>
 
   <div class="stats">
-    <div class="stat"><b>4</b><span>HTML pages</span></div>
-    <div class="stat"><b>4</b><span>JS files</span></div>
+    <div class="stat"><b>5</b><span>HTML pages</span></div>
+    <div class="stat"><b>8</b><span>JS files</span></div>
     <div class="stat"><b>22</b><span>modules</span></div>
     <div class="stat"><b>120</b><span>lessons</span></div>
     <div class="stat"><b>10</b><span>written bodies</span></div>
-    <div class="stat"><b>0</b><span>dependencies</span></div>
+    <div class="stat"><b>1</b><span>dependency</span></div>
   </div>
 </header>
 
@@ -341,16 +342,25 @@
   <h2>The shape of it</h2>
   <p>
     There is no framework, no bundler and no package manager. Each page is plain HTML that loads
-    <code>data.js</code>, then <code>app.js</code>, then one page-specific script. Those files don't
-    import each other — they just declare top-level <code class="plain">const</code>s that land in the
-    same global scope, so <strong>the order of the <code class="plain">&lt;script&gt;</code> tags is the
-    dependency graph</strong>. Open any page with <code class="plain">open index.html</code> and it works.
+    <code>data.js</code>, the three account scripts, then <code>app.js</code>, then one page-specific
+    script. Those files don't import each other — they just declare top-level
+    <code class="plain">const</code>s that land in the same global scope, so <strong>the order of the
+    <code class="plain">&lt;script&gt;</code> tags is the dependency graph</strong>.
   </p>
   <p>
     The split that matters is <em>content</em> versus <em>rules</em> versus <em>view</em>.
     <code>data.js</code> is 1,115 lines of pure content and holds no logic. <code>app.js</code> is the
     only place that knows how progress is stored and which modules are unlocked. Each page script does
     one job: turn that state into DOM for one screen.
+  </p>
+  <p>
+    Accounts are a fourth layer, deliberately bolted on the side rather than threaded through.
+    <code>supabase-config.js</code>, <code>auth.js</code> and <code>sync.js</code> are the only files that
+    know a server exists, and if <code>supabase-config.js</code> still holds its placeholder values,
+    <strong>all three go dormant and the platform behaves exactly as it did when it was local-only</strong>.
+    That is the state the repository ships in. Nothing else in the codebase branches on whether someone
+    is signed in — <code class="plain">Store</code> is still read synchronously from localStorage on every
+    render, and it never waits on a network.
   </p>
 </section>
 
@@ -379,8 +389,13 @@
     </div>
     <div class="tree-row">
       <span class="path"><span class="ind">├─ </span>placement.html</span>
-      <span class="loc">23</span>
+      <span class="loc">27</span>
       <span class="role">Near-empty. One <code class="plain">#quiz-root</code> div; the whole test is drawn by JS.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">├─ </span>account.html</span>
+      <span class="loc">27</span>
+      <span class="role">Same pattern: one <code class="plain">#account-root</code> div. Sign in, sign up, reset, and the signed-in overview are all drawn by JS.</span>
     </div>
     <div class="tree-row">
       <span class="path"><span class="ind">├─ </span>SPECS.md</span>
@@ -388,11 +403,29 @@
       <span class="role">Product spec — purpose, audience, must/should/won't, open questions. Not read by any code.</span>
     </div>
 
+    <div class="tree-row dir"><span class="path"><span class="ind">├─ </span>docs/</span><span class="loc"></span><span class="role"></span></div>
+
+    <div class="tree-row">
+      <span class="path"><span class="ind">   │  </span>architecture.html</span>
+      <span class="loc">—</span>
+      <span class="role">This page.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">   │  </span>schema.sql</span>
+      <span class="loc">109</span>
+      <span class="role"><strong>The security model.</strong> The <code class="plain">progress</code> table plus the Row Level Security policies that scope every row to its owner. Run once in the Supabase SQL editor.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">   │  </span>SETUP-ACCOUNTS.md</span>
+      <span class="loc">125</span>
+      <span class="role">How to switch accounts on: create the project, run the schema, configure redirect URLs and SMTP, and the four things to test afterwards.</span>
+    </div>
+
     <div class="tree-row dir"><span class="path"><span class="ind">└─ </span>assets/</span><span class="loc"></span><span class="role"></span></div>
 
     <div class="tree-row">
       <span class="path"><span class="ind">   ├─ css/</span>styles.css</span>
-      <span class="loc">721</span>
+      <span class="loc">942</span>
       <span class="role">Every style in the project. Opens with the design tokens, then three <code class="plain">[data-team]</code> blocks that swap them.</span>
     </div>
     <div class="tree-row">
@@ -401,24 +434,44 @@
       <span class="role"><strong>Content.</strong> <code class="plain">CURRICULUM</code>, <code class="plain">CORE_ORDER</code>, <code class="plain">BRANCHES</code>, <code class="plain">LESSON_BODIES</code>, <code class="plain">PLACEMENT_QUESTIONS</code>, <code class="plain">RECHECK_QUESTIONS</code>. No behaviour.</span>
     </div>
     <div class="tree-row">
+      <span class="path"><span class="ind">      </span>supabase-config.js</span>
+      <span class="loc">41</span>
+      <span class="role"><strong>Two values and a flag.</strong> Project URL, anon key, and <code class="plain">SUPABASE_READY</code> — false while the placeholders are untouched, which is what keeps the whole account layer dormant.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">      </span>auth.js</span>
+      <span class="loc">187</span>
+      <span class="role"><strong>Accounts.</strong> Wraps Supabase Auth: session lifecycle, sign up / in / out, password reset. Also the error-message translation and the client-side password hints.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">      </span>sync.js</span>
+      <span class="loc">230</span>
+      <span class="role"><strong>Reconciliation.</strong> Pull, push, and the merge rules that decide which side of a conflict wins. The only file that talks to the <code class="plain">progress</code> table.</span>
+    </div>
+    <div class="tree-row">
       <span class="path"><span class="ind">      </span>app.js</span>
-      <span class="loc">152</span>
+      <span class="loc">231</span>
       <span class="role"><strong>State and rules.</strong> The <code class="plain">Store</code>, all progress and unlock maths, theming, and the shared header/footer.</span>
     </div>
     <div class="tree-row">
       <span class="path"><span class="ind">      </span>roadmap.js</span>
-      <span class="loc">149</span>
+      <span class="loc">152</span>
       <span class="role">Positions module cards over the vine SVG, drives the progress ring and the red/yellow/blue switch.</span>
     </div>
     <div class="tree-row">
       <span class="path"><span class="ind">      </span>lesson.js</span>
-      <span class="loc">129</span>
+      <span class="loc">132</span>
       <span class="role">Renders one lesson: TOC, body (or the honest "not written yet" outline), complete/next buttons.</span>
     </div>
     <div class="tree-row">
       <span class="path"><span class="ind">      </span>placement.js</span>
       <span class="loc">264</span>
       <span class="role">The whole placement test: question flow, grading, the recheck, and writing the result into progress.</span>
+    </div>
+    <div class="tree-row">
+      <span class="path"><span class="ind">      </span>account.js</span>
+      <span class="loc">384</span>
+      <span class="role">The five account screens and the form actions behind them. Holds no credentials and writes nothing to storage.</span>
     </div>
   </div>
 </section>
@@ -429,14 +482,15 @@
   <h2>How the scripts fit together</h2>
 
   <figure>
-    <svg viewBox="0 0 1000 300" role="img"
-         aria-label="data.js defines globals used by app.js, which reads and writes localStorage and is called by a page script, which writes the DOM.">
+    <svg viewBox="0 0 1000 412" role="img"
+         aria-label="data.js defines globals used by app.js, which reads and writes localStorage and is called by a page script, which writes the DOM. Below, an optional and normally dormant layer: auth.js hands a session to sync.js, which pulls from and pushes localStorage to Supabase.">
       <defs>
         <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M0 0 L10 5 L0 10 z" fill="#6b7873"/>
         </marker>
       </defs>
 
+      <!-- ------------------------------------------- the render path -->
       <rect class="s-box" x="26"  y="40" width="200" height="96" rx="3"/>
       <text class="s-name" x="126" y="68"  text-anchor="middle">data.js</text>
       <text class="s-role" x="126" y="89"  text-anchor="middle">content only</text>
@@ -452,7 +506,7 @@
       <rect class="s-box" x="558" y="40" width="200" height="96" rx="3"/>
       <text class="s-name" x="658" y="68"  text-anchor="middle">page script</text>
       <text class="s-role" x="658" y="89"  text-anchor="middle">renders one view</text>
-      <text class="s-det"  x="658" y="109" text-anchor="middle">roadmap · lesson</text>
+      <text class="s-det"  x="658" y="109" text-anchor="middle">roadmap · lesson · account</text>
       <text class="s-det"  x="658" y="124" text-anchor="middle">placement · inline</text>
 
       <rect class="s-box" x="824" y="40" width="150" height="96" rx="3"/>
@@ -468,13 +522,45 @@
       <line class="s-edge" x1="758" y1="88" x2="818" y2="88" marker-end="url(#a1)"/>
       <text class="s-lab"  x="788" y="79" text-anchor="middle">innerHTML</text>
 
-      <rect class="s-box" x="292" y="212" width="200" height="60" rx="3" stroke="#2f3a37"/>
-      <text class="s-role" x="392" y="238" text-anchor="middle" fill="#a3afa9">localStorage</text>
-      <text class="s-det"  x="392" y="256" text-anchor="middle">'cybersprouts.v1'</text>
+      <!-- ------------------------------------------ the working copy -->
+      <rect class="s-box" x="292" y="184" width="200" height="56" rx="3"/>
+      <text class="s-role" x="392" y="209" text-anchor="middle" fill="#a3afa9">localStorage</text>
+      <text class="s-det"  x="392" y="227" text-anchor="middle">'cybersprouts.v1'</text>
 
-      <line class="s-edge" x1="392" y1="136" x2="392" y2="212"
+      <line class="s-edge" x1="392" y1="136" x2="392" y2="184"
             marker-start="url(#a1)" marker-end="url(#a1)"/>
-      <text class="s-lab"  x="406" y="178">read / write</text>
+      <text class="s-lab"  x="406" y="164">read / write</text>
+
+      <!-- --------------------------------------- the optional layer -->
+      <rect x="14" y="278" width="800" height="118" rx="4"
+            fill="none" stroke="#2f3a37" stroke-width="1" stroke-dasharray="4 4"/>
+      <text class="s-head" x="28" y="298" fill="#6b7873">OPTIONAL — DORMANT UNTIL supabase-config.js IS FILLED IN</text>
+
+      <rect class="s-box" x="26"  y="312" width="200" height="68" rx="3"/>
+      <text class="s-name" x="126" y="338" text-anchor="middle">auth.js</text>
+      <text class="s-det"  x="126" y="357" text-anchor="middle">sign up · in · out</text>
+      <text class="s-det"  x="126" y="371" text-anchor="middle">password reset</text>
+
+      <rect class="s-box" x="292" y="312" width="200" height="68" rx="3"/>
+      <text class="s-name" x="392" y="338" text-anchor="middle">sync.js</text>
+      <text class="s-det"  x="392" y="357" text-anchor="middle">pull = union</text>
+      <text class="s-det"  x="392" y="371" text-anchor="middle">push = verbatim</text>
+
+      <rect class="s-box" x="558" y="312" width="240" height="68" rx="3"/>
+      <text class="s-name" x="678" y="338" text-anchor="middle" fill="#b39bff">Supabase</text>
+      <text class="s-det"  x="678" y="357" text-anchor="middle">auth.users · progress</text>
+      <text class="s-det"  x="678" y="371" text-anchor="middle">RLS: one row per learner</text>
+
+      <line class="s-edge" x1="392" y1="240" x2="392" y2="312"
+            marker-start="url(#a1)" marker-end="url(#a1)"/>
+      <text class="s-lab"  x="406" y="266">merge in / push out</text>
+
+      <line class="s-edge" x1="226" y1="346" x2="286" y2="346" marker-end="url(#a1)"/>
+      <text class="s-lab"  x="256" y="337" text-anchor="middle">session</text>
+
+      <line class="s-edge" x1="492" y1="346" x2="552" y2="346"
+            marker-start="url(#a1)" marker-end="url(#a1)"/>
+      <text class="s-lab"  x="522" y="337" text-anchor="middle">https</text>
 
       <text class="s-head" x="26" y="24">LOAD ORDER — LEFT TO RIGHT, EVERY PAGE</text>
     </svg>
@@ -483,6 +569,11 @@
       <code class="plain">CURRICULUM</code> only because <code class="plain">data.js</code> ran first, and the
       page script can call <code class="plain">Store</code> only because <code class="plain">app.js</code> ran
       before it. Reordering the script tags in any HTML file breaks the page.
+      <br><br>
+      <b>Note which way the arrows point at the bottom.</b> The render path never reaches through to
+      Supabase — it stops at localStorage, synchronously, every time. <code>sync.js</code> moves that same
+      document in and out of Postgres on its own schedule, so a slow network, a failed request or no
+      account at all changes nothing above the dashed line.
     </figcaption>
   </figure>
 
@@ -512,6 +603,11 @@
           <td class="m">placement.js</td>
           <td>Intro → 24 questions → results → optional recheck. All four screens into one div.</td>
         </tr>
+        <tr>
+          <td class="m">account.html</td>
+          <td class="m">account.js</td>
+          <td>Five screens into one div: sign in, sign up, forgot password, the emailed-link landing, and the signed-in overview. Falls back to a setup notice when Supabase is unconfigured.</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -522,9 +618,10 @@
   <p class="sec-label">app.js · Store</p>
   <h2>All of the state</h2>
   <p>
-    One localStorage key holds everything the app remembers. There is no account, no sync and no
-    server — progress lives in whichever browser made it, and the footer's <em>Reset progress</em>
-    link deletes the key outright.
+    One localStorage key holds everything the app remembers, and it is always the working copy — every
+    read is synchronous, and nothing on a render path waits on a network. When a learner is signed in,
+    <code>sync.js</code> mirrors this same document to the <code class="plain">progress</code> table
+    column for column; when they are not, it is the only copy there is.
   </p>
 
 <pre><span class="c">// localStorage['cybersprouts.v1']</span>
@@ -536,7 +633,12 @@
     cleared: [ <span class="c">"basics", "python", "terminal"</span> ],
     rechecked: [ <span class="c">"terminal"</span> ],
     takenAt: <span class="c">"2026-09-10T…"</span>
-  }
+  },
+
+  <span class="c">// ── added for sync. Not read by any rendering code; they exist</span>
+  <span class="c">//    only so a merge can tell which side of a conflict is newer.</span>
+  <span class="k">teamUpdatedAt</span>: <span class="c">"2026-09-14T…" | null</span>,   <span class="c">// stamped only when team changes</span>
+  <span class="k">updatedAt</span>:     <span class="c">"2026-09-17T…" | null</span>
 }</pre>
 
   <p>
@@ -553,10 +655,129 @@
         <tr><td class="m">lesson.js</td><td class="m">completed</td><td>Clicking "Mark as complete" pushes or splices one key, then auto-advances to the next lesson.</td></tr>
         <tr><td class="m">placement.js</td><td class="m">completed, placement</td><td>Applying results pushes <em>every</em> lesson key of each cleared module at once.</td></tr>
         <tr><td class="m">roadmap.js</td><td class="m">team</td><td>The red/yellow/blue switch. Clicking the active one sets it back to <code class="plain">null</code>.</td></tr>
-        <tr><td class="m">app.js</td><td class="m">— (clears all)</td><td>The footer's Reset progress link removes the key and reloads.</td></tr>
+        <tr><td class="m">app.js</td><td class="m">— (clears all)</td><td>The footer's Reset progress link removes the key and reloads. While signed in it also deletes the row upstream, and says so before asking.</td></tr>
+        <tr><td class="m">sync.js</td><td class="m">all of them</td><td>A pull writes the merged document back with <code class="plain">{ sync: false }</code> — the flag that stops a server-shaped write being re-stamped and pushed straight back out.</td></tr>
       </tbody>
     </table>
   </div>
+
+  <p>
+    <code class="plain">Store.update()</code> is the only writer that stamps timestamps. It compares
+    <code class="plain">team</code> before and after the caller's mutation and sets
+    <code class="plain">teamUpdatedAt</code> only when it actually changed, so marking a lesson complete
+    doesn't make a stale specialization look freshly chosen to the next merge.
+  </p>
+</section>
+
+<!-- ============================================================ accounts -->
+<section>
+  <p class="sec-label">auth.js + sync.js · docs/schema.sql</p>
+  <h2>Accounts, and what happens to progress</h2>
+  <p>
+    The whole point of an account here is that progress stops being a property of a browser. The risk
+    that comes with it is the one every sync feature has: a learner who finishes three modules, makes an
+    account, and finds an empty roadmap does not come back. So the interesting part is not sign-in — it
+    is the merge.
+  </p>
+
+  <figure>
+    <svg viewBox="0 0 960 300" role="img"
+         aria-label="At sign-in, local anonymous progress and the account's stored progress are unioned, then pushed back up, so neither side is lost. Afterwards, local writes overwrite the remote row verbatim.">
+      <defs>
+        <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="#6b7873"/>
+        </marker>
+      </defs>
+
+      <text class="s-head" x="24" y="22">AT SIGN-IN — Sync.adopt()</text>
+
+      <rect class="s-box" x="24" y="44" width="230" height="76" rx="3"/>
+      <text class="s-role" x="139" y="68" text-anchor="middle" fill="#a3afa9">this browser</text>
+      <text class="s-det"  x="139" y="88" text-anchor="middle">basics/cia-triad</text>
+      <text class="s-det"  x="139" y="104" text-anchor="middle">basics/what-is-cyber</text>
+
+      <rect class="s-box" x="24" y="152" width="230" height="76" rx="3"/>
+      <text class="s-role" x="139" y="176" text-anchor="middle" fill="#a3afa9">the account</text>
+      <text class="s-det"  x="139" y="196" text-anchor="middle">basics/cia-triad</text>
+      <text class="s-det"  x="139" y="212" text-anchor="middle">net/ip-subnetting</text>
+
+      <rect class="s-box" x="376" y="98" width="180" height="76" rx="3" stroke="#57d68f"/>
+      <text class="s-name" x="466" y="128" text-anchor="middle">union</text>
+      <text class="s-det"  x="466" y="150" text-anchor="middle">no side loses work</text>
+
+      <path class="s-edge" d="M254 82 C 320 82, 320 128, 370 128" marker-end="url(#a4)"/>
+      <path class="s-edge" d="M254 190 C 320 190, 320 144, 370 144" marker-end="url(#a4)"/>
+
+      <rect class="s-box" x="678" y="86" width="258" height="100" rx="3"/>
+      <text class="s-role" x="807" y="110" text-anchor="middle" fill="#a3afa9">written to both</text>
+      <text class="s-det"  x="807" y="132" text-anchor="middle">basics/cia-triad</text>
+      <text class="s-det"  x="807" y="148" text-anchor="middle">basics/what-is-cyber</text>
+      <text class="s-det"  x="807" y="164" text-anchor="middle">net/ip-subnetting</text>
+
+      <line class="s-edge" x1="556" y1="136" x2="672" y2="136" marker-end="url(#a4)"/>
+
+      <text class="s-head" x="24" y="272">AFTERWARDS — every local write overwrites the row verbatim, so "undo" sticks</text>
+    </svg>
+    <figcaption>
+      Lesson completion is monotonic — nobody un-learns the CIA triad — which is what makes a union the
+      safe default rather than a guess. <code class="plain">team</code> and
+      <code class="plain">placement</code> are single values and can't be unioned, so they fall back to
+      whichever side carries the later timestamp.
+    </figcaption>
+  </figure>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Moment</th><th>Rule</th><th>Why that one</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="m">pull</td>
+          <td>Union of <code class="plain">completed</code></td>
+          <td>Additive only. Two devices used on different days both keep their work.</td>
+        </tr>
+        <tr>
+          <td class="m">push</td>
+          <td>Local document wins outright</td>
+          <td>A union here would make un-completing a lesson impossible — the removal would come straight back on the next pull.</td>
+        </tr>
+        <tr>
+          <td class="m">sign-in</td>
+          <td>Union, then push</td>
+          <td>The one moment anonymous progress can be lost. This is the step that rescues it.</td>
+        </tr>
+        <tr>
+          <td class="m">sign-out</td>
+          <td>Clear the local copy</td>
+          <td>Not only privacy on a shared machine: leftover progress would otherwise be unioned into the <em>next</em> account signed in on this browser.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The security model is four policies, not the key</h3>
+  <p>
+    The anon key sits in <code>supabase-config.js</code> in plain sight, and that is how it is meant to
+    work — it identifies the project, it does not authorize anything. What actually separates one
+    learner's row from another's is Row Level Security in
+    <code>docs/schema.sql</code>: four policies scoped
+    <code class="plain">to authenticated</code>, each matching <code class="plain">auth.uid() = user_id</code>.
+    Insert and update carry a <code class="plain">with check</code> clause as well as
+    <code class="plain">using</code>, which is what stops someone writing a row stamped with a user id
+    that isn't theirs.
+  </p>
+  <p>
+    Two consequences worth holding onto. First, if RLS is ever disabled on that table, every learner's
+    row becomes readable by anyone who views the page source — the key was never the protection.
+    Second, the client is untrusted code running on someone else's computer, so the integrity rules
+    (<code class="plain">team</code> must be one of three values, <code class="plain">completed</code> must
+    be an array, capped at 2,000 entries) are <code class="plain">check</code> constraints in Postgres
+    rather than validation in JavaScript.
+  </p>
+  <p>
+    The <code class="plain">service_role</code> key must never appear in this repository. It bypasses RLS
+    entirely, which is also why account deletion isn't in the UI yet — doing it properly needs an Edge
+    Function rather than client-side code.
+  </p>
 </section>
 
 <!-- ============================================================ gating -->
@@ -872,10 +1093,11 @@
   <ol class="notes">
     <li>
       <span class="hd">One global namespace, no guardrails</span>
-      Every top-level <code class="plain">const</code> across all four scripts shares one scope.
-      <code>roadmap.js</code>, <code>lesson.js</code> and <code>placement.js</code> each define their own
-      <code class="plain">render()</code> — harmless only because no page loads two of them. A duplicate
-      name across <code>data.js</code> and <code>app.js</code> would throw on load.
+      Every top-level <code class="plain">const</code> across all eight scripts shares one scope.
+      <code>roadmap.js</code>, <code>lesson.js</code>, <code>placement.js</code> and <code>account.js</code>
+      each define their own <code class="plain">render()</code>, and <code>placement.js</code> and
+      <code>account.js</code> both define <code class="plain">root</code> — harmless only because no page
+      loads two of them. A duplicate name across the shared scripts would throw on load.
     </li>
     <li>
       <span class="hd"><code class="plain">data.js</code> defines itself, then extends itself</span>
@@ -899,11 +1121,45 @@
       roadmap sidebar panel, and the narrow-screen list — but a learner scanning the vine won't see them.
     </li>
     <li>
-      <span class="hd">Progress is per-browser and unversioned</span>
+      <span class="hd">Progress is unversioned</span>
       <code class="plain">Store.read()</code> merges the stored object over
-      <code class="plain">blank()</code>, so new fields get defaults — but there's no migration path if the
-      shape of <code class="plain">completed</code> ever changes. The key name carries the only version
-      marker: <code class="plain">.v1</code>.
+      <code class="plain">blank()</code>, so new fields get defaults — which is exactly how
+      <code class="plain">updatedAt</code> and <code class="plain">teamUpdatedAt</code> were added without
+      breaking anyone's saved state. There's still no migration path if the shape of
+      <code class="plain">completed</code> itself ever changes, and now that the same document also lives
+      in Postgres, a shape change has two places to land. The key name carries the only version marker:
+      <code class="plain">.v1</code>.
+    </li>
+    <li>
+      <span class="hd">Simultaneous devices resolve last-write-wins</span>
+      Pulls union, but pushes overwrite. Two browsers open at the same minute can therefore lose an
+      <em>un</em>-completion — mark a lesson done on the laptop, undo it on the phone, and the laptop's
+      next push can put it back. Fixing this properly needs per-lesson tombstones rather than a plain
+      array, which is not worth the complexity for progress that only ever grows. Sequential use across
+      devices, which is the real pattern, is unaffected.
+    </li>
+    <li>
+      <span class="hd">A sync can change the page underneath the learner</span>
+      <code>sync.js</code> fires <code class="plain">cybersprouts:progress</code> after a pull;
+      <code>roadmap.js</code> and <code>lesson.js</code> listen and redraw. <code>placement.js</code>
+      deliberately does not — redrawing mid-question would be hostile — so a pull that lands during the
+      test is only reflected once the results are applied. Any new page that renders progress needs to
+      subscribe, or it will quietly show stale state.
+    </li>
+    <li>
+      <span class="hd">Auth resolves after first paint</span>
+      <code class="plain">Auth.ready()</code> is false until Supabase has checked the stored session, so
+      the header reserves the account chip's footprint rather than rendering "Sign in" at someone who is
+      already signed in. Anything new that branches on
+      <code class="plain">Auth.signedIn()</code> has to handle the not-yet-known state too — treating it
+      as "signed out" produces a visible flicker on every page load.
+    </li>
+    <li>
+      <span class="hd">Email delivery is the first thing that will break at scale</span>
+      Supabase's built-in sender is rate-limited to a handful of messages an hour. It is fine for testing
+      and will silently stop new learners from confirming their accounts the moment there is real traffic.
+      Connecting real SMTP is step 3 of <code>docs/SETUP-ACCOUNTS.md</code> and is a launch blocker, not a
+      nice-to-have.
     </li>
     <li>
       <span class="hd">The header renders before the page script runs</span>
@@ -916,7 +1172,7 @@
 </section>
 
 <footer class="doc">
-  Cybersprouts · docs/architecture.html · reflects the tree at commit 9265c15 · 2,887 lines across 11 files
+  Cybersprouts · docs/architecture.html · updated for the account layer · 4,059 lines across 15 files
 </footer>
 
 </div>
