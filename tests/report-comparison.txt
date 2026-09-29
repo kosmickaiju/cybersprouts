@@ -1,0 +1,55 @@
+CYBERSPROUTS — PLACEMENT TEST: BEFORE / AFTER THE RECHECK FIX
+Generated 2026-09-28T17:47:15.211Z
+BEFORE = Strict — recheck must be 3/3   (model)
+AFTER  = Tolerant — recheck passes at 2/3   (model + the real UI, cross-checked)
+
+VERIFICATION OK: 68/68 matched the real UI
+
+== WHAT CHANGED, IN ONE LINE
+
+   stranded        45  ->  30
+   reach the fork  15  ->  30
+   lessons lost    959  ->  691
+
+== THE EXACT CASE THAT STARTED THIS: 2/3 ON A MODULE, 2/3 ON ITS RECHECK
+
+-- 2/3 then 2/3, per module (before -> after):
+   slip on Security Foundations       Security Foundations       -> the fork                   recovers 42 lessons
+   slip on Python for Security        Python for Security        -> the fork                   recovers 35 lessons
+   slip on The Terminal               The Terminal               -> the fork                   recovers 28 lessons
+   slip on Operating Systems          Operating Systems          -> the fork                   recovers 22 lessons
+   slip on Networking Fundamentals    Networking Fundamentals    -> the fork                   recovers 15 lessons
+   slip on Cryptography Essentials    Cryptography Essentials    -> the fork                   recovers 9 lessons
+   slip on Web & HTTP Fundamentals    Web & HTTP Fundamentals    -> the fork                   recovers 4 lessons
+   slip on Attacker Methodology       Attacker Methodology       -> the fork                   recovers 0 lessons
+
+== EVERY SCENARIO, SIDE BY SIDE
+
+== DID IT GO TOO FAR?
+
+-- guardrails:
+   [ ok ] A recheck answered 1/3 still keeps the module  (8 scenarios)
+   [ ok ] A recheck answered 0/3 still keeps the module  (8 scenarios)
+   [ ok ] 1/3 in the main test still earns no recheck at all  (8 scenarios)
+   [ ok ] Modules still clear as a prefix, never an arbitrary set  (68 scenarios)
+   [ ok ] No module is ever cleared without being answered  (68 scenarios)
+
+== THE GAUNTLET — A REALISTIC GOOD-BUT-NOT-PERFECT RESULT
+
+-- the gauntlet (cost of one imperfect recheck in the run):
+    1 modules at 2/3 = 23/24    one slip: 19 lessons ->  0   two slips after: 19 lessons
+    2 modules at 2/3 = 22/24    one slip: 23 lessons ->  0   two slips after: 23 lessons
+    3 modules at 2/3 = 21/24    one slip: 22 lessons ->  0   two slips after: 22 lessons
+    4 modules at 2/3 = 20/24    one slip: 19 lessons ->  0   two slips after: 19 lessons
+    5 modules at 2/3 = 19/24    one slip: 15 lessons ->  0   two slips after: 15 lessons
+    6 modules at 2/3 = 18/24    one slip: 10 lessons ->  0   two slips after: 10 lessons
+    7 modules at 2/3 = 17/24    one slip:  5 lessons ->  0   two slips after:  5 lessons
+    8 modules at 2/3 = 16/24    one slip:  0 lessons ->  0   two slips after:  0 lessons
+
+== EVERY POSSIBLE LEARNER, BEFORE AND AFTER
+
+-- exhaustive sweep, before -> after:
+   recheck runs      87380 -> 87380
+   stranded          65535 -> 43690
+   near-miss strands 21845 -> 0
+   worst case        42 -> 42 lessons

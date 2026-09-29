@@ -4,13 +4,24 @@
    Modules clear as a prefix: you skip a run of modules from the start, not an
    arbitrary set. A near miss on the module that blocks the prefix earns a
    recheck on fresh questions, so one careless answer does not cost a learner
-   every module above it. */
+   every module above it. The recheck tolerates one miss of its own — see
+   RECHECK_MISSES_ALLOWED — because a recheck that demanded perfection just
+   moved the cliff rather than removing it. */
 
 const root = document.getElementById('quiz-root');
 const LETTERS = ['A', 'B', 'C', 'D'];
 
 const answers = new Array(PLACEMENT_QUESTIONS.length).fill(null);
 let step = -1;                    // -1 intro · 0..n-1 questions · n results
+
+/* How many of the fresh questions a learner may miss and still clear the
+   module. Demanding a clean sweep here made 2/3 on a recheck indistinguishable
+   from 0/3, so one careless answer followed by one more could cost a learner
+   every module above it — six aced modules and 35 lessons, in the worst
+   realistic case. Tolerating a single miss keeps the recheck a second attempt
+   at the same standard rather than a harder one; two misses out of three is a
+   genuine gap, and keeps the module in the path. */
+const RECHECK_MISSES_ALLOWED = 1;
 
 /* recheck state */
 let recheckModule = null;         // module currently being rechecked
@@ -99,8 +110,9 @@ function recheckQuestion() {
     onPrev: () => { recheckStep--; render(); },
     onNext: () => {
       if (recheckStep < bank.length - 1) { recheckStep++; render(); return; }
-      const perfect = bank.every((qq, i) => recheckAnswers[i] === qq.answer);
-      (perfect ? rechecked.passed : rechecked.failed).push(recheckModule);
+      const right = bank.reduce((n, qq, i) => n + (recheckAnswers[i] === qq.answer ? 1 : 0), 0);
+      const cleared = right >= bank.length - RECHECK_MISSES_ALLOWED;
+      (cleared ? rechecked.passed : rechecked.failed).push(recheckModule);
       recheckModule = null;
       render();
     }
@@ -164,8 +176,10 @@ function subhead(g) {
     return 'Every core module is cleared. Pick red team or blue team and start specializing.';
   }
   if (g.canRecheck) {
-    return `You missed one question in ${getModule(g.blocker).title}. Answer ${RECHECK_QUESTIONS[g.blocker].length} more
-            on that module and, if they're clean, everything below the fork that you aced clears with it.`;
+    const bank = RECHECK_QUESTIONS[g.blocker].length;
+    return `You missed one question in ${getModule(g.blocker).title}. Answer ${bank} more on that module —
+            get ${bank - RECHECK_MISSES_ALLOWED} of them right and everything below the fork that you aced
+            clears with it.`;
   }
   return 'Modules are skipped in order, so the first one you did not clear is where you start.';
 }

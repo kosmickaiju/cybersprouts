@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Placement test — before / after the recheck fix</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; padding: 28px 20px 80px;
+    background: #0e1512; color: #e6efe9;
+    font: 14px/1.55 ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  h2 { font-size: 17px; margin: 38px 0 4px; color: #9fe0bd; }
+  h2:first-of-type { margin-top: 26px; }
+  p.note { color: #8fa39a; margin: 0 0 18px; max-width: 78ch; }
+  p.sub { color: #8fa39a; margin: 0 0 14px; max-width: 86ch; font-size: 13px; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; color: #b7e8cd; }
+
+  button {
+    font: inherit; font-weight: 600; cursor: pointer;
+    background: #2f9e68; color: #08120d; border: 0;
+    border-radius: 8px; padding: 10px 18px; margin: 0 8px 20px 0;
+  }
+  button.ghost { background: transparent; color: #9fe0bd; box-shadow: inset 0 0 0 1px #2c463a; }
+  button[disabled] { opacity: .5; cursor: default; }
+
+  #status { color: #8fa39a; font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; min-height: 18px; }
+
+  table { border-collapse: collapse; width: 100%; margin: 6px 0 4px; font-size: 12.5px; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #1d2b24; vertical-align: top; }
+  th { color: #7f968b; font-weight: 600; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+  td.num, th.num { text-align: right; font-family: ui-monospace, Menlo, monospace; }
+  tr.stuck td { background: rgba(214, 92, 84, .13); }
+  tr.fork  td { background: rgba(47, 158, 104, .12); }
+  .tag { font-family: ui-monospace, Menlo, monospace; font-size: 11px; padding: 1px 6px; border-radius: 4px; }
+  .tag.ok   { background: rgba(47,158,104,.22);  color: #8fe0b4; }
+  .tag.bad  { background: rgba(214,92,84,.22);   color: #f0a29b; }
+  .tag.warn { background: rgba(212,175,55,.18);  color: #e8d08a; }
+
+  .scroll { overflow-x: auto; }
+  pre.report {
+    background: #08100c; border: 1px solid #1d2b24; border-radius: 10px;
+    padding: 16px; overflow-x: auto; font-size: 12px; line-height: 1.5;
+    color: #cfe3d7; white-space: pre;
+  }
+  .verify { border-radius: 10px; padding: 12px 16px; margin: 16px 0 0; font-size: 13px; }
+  .verify.ok  { background: rgba(47,158,104,.12);  box-shadow: inset 0 0 0 1px #2b5c42; }
+  .verify.bad { background: rgba(214,92,84,.14);   box-shadow: inset 0 0 0 1px #6b322e; }
+
+  /* The real placement app runs in here. Hidden, but present and clickable. */
+  #stage { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Placement test — before / after the recheck fix</h1>
+  <p class="note">
+    The change: a recheck used to require <strong>3 of 3</strong> fresh questions, which made a 2/3
+    indistinguishable from a 0/3. It now tolerates <strong>one miss</strong>
+    (<code>RECHECK_MISSES_ALLOWED</code> in <code>placement.js</code>).
+  </p>
+  <p class="note">
+    Every scenario below is run as the <em>same learner twice</em>: once under the old rule and once under
+    the new one. The “after” column is driven by clicking the <strong>real</strong> quiz UI, so it is
+    shipped behaviour rather than a description of it; the “before” column is the verified rule model,
+    since that code no longer exists to click. Nothing here writes to your progress.
+  </p>
+  <p class="note">
+    For the full standalone analysis of either rule set, see
+    <a href="placement-sim.html" style="color:#9fe0bd">placement-sim.html</a>.
+  </p>
+
+  <button id="run">Run the comparison</button>
+  <button id="sweep" class="ghost">Also compare across all 65,536 learners (slower)</button>
+  <div id="status"></div>
+
+  <div id="out"></div>
+</div>
+
+<!-- The real app, and the stage it needs. -->
+<div id="stage"><div id="quiz-root"></div></div>
+
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+  /* A harness that dies silently is worse than no harness: the page would
+     just sit there looking like it was still working. Surface anything
+     thrown so both the browser and the headless runner can see it. */
+  function reportHarnessError(what, where) {
+    var st = document.getElementById('status');
+    if (st) st.textContent = 'HARNESS ERROR: ' + what;
+    var out = document.getElementById('out');
+    if (out) {
+      out.insertAdjacentHTML('afterbegin',
+        '<div class="verify bad"><strong>The harness threw before finishing.<\/strong><br>' +
+        String(what) + '<br><span style="color:#8fa39a">' + (where || '') + '<\/span><\/div>');
+    }
+  }
+  window.addEventListener('error', function (e) {
+    reportHarnessError(e.message || e.error, (e.filename || '') + ':' + (e.lineno || '?'));
+  });
+  /* The run loop is async, so anything it throws arrives as a rejected
+     promise rather than an error event. Without this the page just stops
+     mid-matrix with no explanation. */
+  window.addEventListener('unhandledrejection', function (e) {
+    var r = e.reason || {};
+    reportHarnessError(r.message || r, r.stack ? String(r.stack).split('\n')[1] || '' : '');
+  });
+
+  /* placement.js calls initChrome() and scrollTo() on every render. Neither is
+     part of the grading logic, and both would fight this page, so stub them
+     before placement.js loads. Nothing else about the app is touched. */
+  window.initChrome = function () {};
+  window.scrollTo = function () {};
+</script>
+<script src="../assets/js/placement.js"></script>
+<script src="./placement-rules.js"></script>
+<script src="./placement-driver.js"></script>
+<script src="./placement-compare.js"></script>
+</body>
+</html>

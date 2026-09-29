@@ -1,0 +1,121 @@
+CYBERSPROUTS — PLACEMENT TEST SIMULATION
+Generated 2026-09-28T17:24:02.598Z
+Driver clicks the real UI. The rule model is cross-checked against it on every scenario.
+
+VERIFICATION OK: 68/68 scenarios matched the real UI
+
+== MATRIX A — ONE CARELESS ANSWER, THEN EVERY POSSIBLE RECHECK
+   Security Foundations       recheck 0/3    lands on Security Foundations            0 skipped    LOST 7 aced modules / 42 lessons
+   Security Foundations       recheck 1/3    lands on Security Foundations            0 skipped    LOST 7 aced modules / 42 lessons
+   Security Foundations       recheck 2/3    lands on Security Foundations            0 skipped    LOST 7 aced modules / 42 lessons
+   Security Foundations       recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Python for Security        recheck 0/3    lands on Python for Security             7 skipped    LOST 6 aced modules / 35 lessons
+   Python for Security        recheck 1/3    lands on Python for Security             7 skipped    LOST 6 aced modules / 35 lessons
+   Python for Security        recheck 2/3    lands on Python for Security             7 skipped    LOST 6 aced modules / 35 lessons
+   Python for Security        recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   The Terminal               recheck 0/3    lands on The Terminal                    14 skipped   LOST 5 aced modules / 28 lessons
+   The Terminal               recheck 1/3    lands on The Terminal                    14 skipped   LOST 5 aced modules / 28 lessons
+   The Terminal               recheck 2/3    lands on The Terminal                    14 skipped   LOST 5 aced modules / 28 lessons
+   The Terminal               recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Operating Systems          recheck 0/3    lands on Operating Systems               21 skipped   LOST 4 aced modules / 22 lessons
+   Operating Systems          recheck 1/3    lands on Operating Systems               21 skipped   LOST 4 aced modules / 22 lessons
+   Operating Systems          recheck 2/3    lands on Operating Systems               21 skipped   LOST 4 aced modules / 22 lessons
+   Operating Systems          recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Networking Fundamentals    recheck 0/3    lands on Networking Fundamentals         27 skipped   LOST 3 aced modules / 15 lessons
+   Networking Fundamentals    recheck 1/3    lands on Networking Fundamentals         27 skipped   LOST 3 aced modules / 15 lessons
+   Networking Fundamentals    recheck 2/3    lands on Networking Fundamentals         27 skipped   LOST 3 aced modules / 15 lessons
+   Networking Fundamentals    recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Cryptography Essentials    recheck 0/3    lands on Cryptography Essentials         34 skipped   LOST 2 aced modules / 9 lessons
+   Cryptography Essentials    recheck 1/3    lands on Cryptography Essentials         34 skipped   LOST 2 aced modules / 9 lessons
+   Cryptography Essentials    recheck 2/3    lands on Cryptography Essentials         34 skipped   LOST 2 aced modules / 9 lessons
+   Cryptography Essentials    recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Web & HTTP Fundamentals    recheck 0/3    lands on Web & HTTP Fundamentals         40 skipped   LOST 1 aced modules / 4 lessons
+   Web & HTTP Fundamentals    recheck 1/3    lands on Web & HTTP Fundamentals         40 skipped   LOST 1 aced modules / 4 lessons
+   Web & HTTP Fundamentals    recheck 2/3    lands on Web & HTTP Fundamentals         40 skipped   LOST 1 aced modules / 4 lessons
+   Web & HTTP Fundamentals    recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Attacker Methodology       recheck 0/3    lands on Attacker Methodology            45 skipped   lost nothing
+   Attacker Methodology       recheck 1/3    lands on Attacker Methodology            45 skipped   lost nothing
+   Attacker Methodology       recheck 2/3    lands on Attacker Methodology            45 skipped   lost nothing
+   Attacker Methodology       recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+
+== THE 2/3 → 2/3 DEAD END, PRICED PER MODULE
+
+-- 2/3 on a module then 2/3 on its recheck, per module:
+   slip on Security Foundations       → 7 aced modules / 42 lessons discarded, no further attempt
+   slip on Python for Security        → 6 aced modules / 35 lessons discarded, no further attempt
+   slip on The Terminal               → 5 aced modules / 28 lessons discarded, no further attempt
+   slip on Operating Systems          → 4 aced modules / 22 lessons discarded, no further attempt
+   slip on Networking Fundamentals    → 3 aced modules / 15 lessons discarded, no further attempt
+   slip on Cryptography Essentials    → 2 aced modules / 9 lessons discarded, no further attempt
+   slip on Web & HTTP Fundamentals    → 1 aced modules / 4 lessons discarded, no further attempt
+   slip on Attacker Methodology       → 0 aced modules / 0 lessons discarded, no further attempt
+
+== MATRIX B — DO RECHECKS REALLY CHAIN?
+   Security Foundations       recheck 0/3    lands on Security Foundations            0 skipped    LOST 6 aced modules / 35 lessons
+   Security Foundations       recheck 1/3    lands on Security Foundations            0 skipped    LOST 6 aced modules / 35 lessons
+   Security Foundations       recheck 2/3    lands on Security Foundations            0 skipped    LOST 6 aced modules / 35 lessons
+   Security Foundations       recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Python for Security        recheck 0/3    lands on Python for Security             7 skipped    LOST 5 aced modules / 28 lessons
+   Python for Security        recheck 1/3    lands on Python for Security             7 skipped    LOST 5 aced modules / 28 lessons
+   Python for Security        recheck 2/3    lands on Python for Security             7 skipped    LOST 5 aced modules / 28 lessons
+   Python for Security        recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   The Terminal               recheck 0/3    lands on The Terminal                    14 skipped   LOST 4 aced modules / 22 lessons
+   The Terminal               recheck 1/3    lands on The Terminal                    14 skipped   LOST 4 aced modules / 22 lessons
+   The Terminal               recheck 2/3    lands on The Terminal                    14 skipped   LOST 4 aced modules / 22 lessons
+   The Terminal               recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Operating Systems          recheck 0/3    lands on Operating Systems               21 skipped   LOST 3 aced modules / 15 lessons
+   Operating Systems          recheck 1/3    lands on Operating Systems               21 skipped   LOST 3 aced modules / 15 lessons
+   Operating Systems          recheck 2/3    lands on Operating Systems               21 skipped   LOST 3 aced modules / 15 lessons
+   Operating Systems          recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Networking Fundamentals    recheck 0/3    lands on Networking Fundamentals         27 skipped   LOST 2 aced modules / 9 lessons
+   Networking Fundamentals    recheck 1/3    lands on Networking Fundamentals         27 skipped   LOST 2 aced modules / 9 lessons
+   Networking Fundamentals    recheck 2/3    lands on Networking Fundamentals         27 skipped   LOST 2 aced modules / 9 lessons
+   Networking Fundamentals    recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Cryptography Essentials    recheck 0/3    lands on Cryptography Essentials         34 skipped   LOST 1 aced modules / 4 lessons
+   Cryptography Essentials    recheck 1/3    lands on Cryptography Essentials         34 skipped   LOST 1 aced modules / 4 lessons
+   Cryptography Essentials    recheck 2/3    lands on Cryptography Essentials         34 skipped   LOST 1 aced modules / 4 lessons
+   Cryptography Essentials    recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+   Web & HTTP Fundamentals    recheck 0/3    lands on Web & HTTP Fundamentals         40 skipped   lost nothing
+   Web & HTTP Fundamentals    recheck 1/3    lands on Web & HTTP Fundamentals         40 skipped   lost nothing
+   Web & HTTP Fundamentals    recheck 2/3    lands on Web & HTTP Fundamentals         40 skipped   lost nothing
+   Web & HTTP Fundamentals    recheck 3/3    lands on the fork — pick a specialization 49 skipped   lost nothing
+
+== MATRIX C — THE HARDER STOP: 1/3 ON THE BLOCKER
+   Security Foundations       no recheck     lands on Security Foundations            0 skipped    LOST 7 aced modules / 42 lessons
+   Python for Security        no recheck     lands on Python for Security             7 skipped    LOST 6 aced modules / 35 lessons
+   The Terminal               no recheck     lands on The Terminal                    14 skipped   LOST 5 aced modules / 28 lessons
+   Operating Systems          no recheck     lands on Operating Systems               21 skipped   LOST 4 aced modules / 22 lessons
+   Networking Fundamentals    no recheck     lands on Networking Fundamentals         27 skipped   LOST 3 aced modules / 15 lessons
+   Cryptography Essentials    no recheck     lands on Cryptography Essentials         34 skipped   LOST 2 aced modules / 9 lessons
+   Web & HTTP Fundamentals    no recheck     lands on Web & HTTP Fundamentals         40 skipped   LOST 1 aced modules / 4 lessons
+   Attacker Methodology       no recheck     lands on Attacker Methodology            45 skipped   lost nothing
+
+== WHAT EACH RULE CHANGE WOULD BUY
+
+-- rule variants, over 68 scenarios (stranded: retry-same / retry-one-better):
+   Current (shipped)                  stranded  45/ 45 of 68   reach fork  15/68   lessons lost 959
+   Recheck passes at 2/3              stranded  30/ 30 of 68   reach fork  30/68   lessons lost 691
+   Two recheck attempts               stranded  45/ 30 of 68   reach fork  15/68   lessons lost 959
+   Recheck offered at 1/3 too         stranded  45/ 45 of 68   reach fork  23/68   lessons lost 804
+   Offered at 1/3 AND passes at 2/3   stranded  30/ 30 of 68   reach fork  38/68   lessons lost 536
+
+== THE GAUNTLET — A REALISTIC GOOD-BUT-NOT-PERFECT RESULT
+
+-- the gauntlet (modules at 2/3 -> consecutive perfect rechecks required):
+    1 modules at 2/3  = 23/24    needs  1 perfect rechecks ( 3 fresh questions, all correct); one slip anywhere costs avg 19 lessons, worst 42
+    2 modules at 2/3  = 22/24    needs  2 perfect rechecks ( 6 fresh questions, all correct); one slip anywhere costs avg 23 lessons, worst 38
+    3 modules at 2/3  = 21/24    needs  3 perfect rechecks ( 9 fresh questions, all correct); one slip anywhere costs avg 22 lessons, worst 33
+    4 modules at 2/3  = 20/24    needs  4 perfect rechecks (12 fresh questions, all correct); one slip anywhere costs avg 19 lessons, worst 27
+    5 modules at 2/3  = 19/24    needs  5 perfect rechecks (15 fresh questions, all correct); one slip anywhere costs avg 15 lessons, worst 21
+    6 modules at 2/3  = 18/24    needs  6 perfect rechecks (18 fresh questions, all correct); one slip anywhere costs avg 10 lessons, worst 14
+    7 modules at 2/3  = 17/24    needs  7 perfect rechecks (21 fresh questions, all correct); one slip anywhere costs avg 5 lessons, worst 7
+    8 modules at 2/3  = 16/24    needs  8 perfect rechecks (24 fresh questions, all correct); one slip anywhere costs avg 0 lessons, worst 0
+
+== EXHAUSTIVE SWEEP — EVERY POSSIBLE LEARNER
+
+-- exhaustive sweep (65,536 profiles x 4 recheck outcomes):
+   Current (shipped)                  stranded 65535 of 87380 recheck runs (75.0%), near-miss 21845, avg 9.9 lessons lost, worst 42
+   Recheck passes at 2/3              stranded 43690 of 87380 recheck runs (50.0%), near-miss 0, avg 9.9 lessons lost, worst 42
+   Two recheck attempts               stranded 65535 of 87380 recheck runs (75.0%), near-miss 21845, avg 9.9 lessons lost, worst 42
+   Recheck offered at 1/3 too         stranded 131070 of 174760 recheck runs (75.0%), near-miss 43690, avg 9.9 lessons lost, worst 42
+   Offered at 1/3 AND passes at 2/3   stranded 87380 of 174760 recheck runs (50.0%), near-miss 0, avg 9.9 lessons lost, worst 42
